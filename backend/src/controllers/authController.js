@@ -13,21 +13,48 @@ const generateToken = (id) => {
 // @access  Public
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
-
-        // Check if user exists
-        const userExists = await User.findOne({ email });
-
-        if (userExists) {
-            return res.status(400).json({ success: false, message: 'User already exists' });
-        }
-
-        // Create user
-        const user = await User.create({
-            name,
+        const {
+            firstName,
+            lastName,
             email,
             password,
-            role: role || 'student', // Default to student
+            role,
+            phone,
+            otp,
+            dob,
+            street,
+            area,
+            city,
+            state,
+            pincode
+        } = req.body;
+
+        const userExists = await User.findOne({ 
+            $or: [{ email }, { phone }] 
+        });
+
+        if (userExists) {
+            const field = userExists.email === email ? 'Email' : 'Phone number';
+            return res.status(400).json({ 
+                success: false, 
+                message: `${field} already exists` 
+            });
+        }
+
+        const user = await User.create({
+            firstName,
+            lastName,
+            email,
+            password,
+            role: role || 'student',
+            phone,
+            otp,
+            dob,
+            street,
+            area,
+            city,
+            state,
+            pincode,
         });
 
         res.status(201).json({
@@ -35,9 +62,13 @@ exports.register = async (req, res) => {
             token: generateToken(user._id),
             user: {
                 id: user._id,
-                name: user.name,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 email: user.email,
                 role: user.role,
+                phone: user.phone,
+                city: user.city,
+                state: user.state,
             },
         });
     } catch (error) {
@@ -76,9 +107,13 @@ exports.login = async (req, res) => {
             token: generateToken(user._id),
             user: {
                 id: user._id,
-                name: user.name,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 email: user.email,
                 role: user.role,
+                phone: user.phone,
+                city: user.city,
+                state: user.state,
             },
         });
     } catch (error) {

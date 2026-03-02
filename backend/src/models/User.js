@@ -3,9 +3,13 @@ const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema(
     {
-        name: {
+        firstName: {
             type: String,
-            required: [true, 'Please add a name'],
+            required: [true, 'Please add a first name'],
+        },
+        lastName: {
+            type: String,
+            required: [true, 'Please add a last name'],
         },
         email: {
             type: String,
@@ -20,12 +24,33 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, 'Please add a password'],
             minlength: 6,
-            select: false, // Don't return password by default
+            select: false,
         },
         role: {
             type: String,
             enum: ['admin', 'instructor', 'student'],
             default: 'student',
+        },
+        phone: {
+            type: String,
+            required: [true, 'Please add a phone number'],
+            unique: true,
+            match: [/^[0-9]{10}$/, 'Phone number must be exactly 10 digits'],
+        },
+        otp: {
+            type: String,
+            match: [/^[0-9]{6}$/, 'OTP must be exactly 6 digits'],
+        },
+        dob: {
+            type: Date,
+        },
+        street: { type: String },
+        area: { type: String },
+        city: { type: String },
+        state: { type: String },
+        pincode: {
+            type: String,
+            match: [/^[0-9]{6}$/, 'Pincode must be exactly 6 digits']
         },
     },
     { timestamps: true }
