@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Loader } from '../components/Loader';
 
 type SignupFormState = {
   firstName: string;
@@ -489,6 +490,8 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onSignupSuccess }) => {
           )}
         </section>
       </div>
+
+      {isSubmitting && <Loader message="Creating your account..." />}
 
       {showPopup && (
         <>

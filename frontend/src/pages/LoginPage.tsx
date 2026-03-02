@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Loader } from '../components/Loader';
 
 type LoginFormState = {
   email: string;
@@ -158,6 +159,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           </form>
         </section>
       </div>
+      {isSubmitting && <Loader message="Authenticating..." />}
     </div>
   );
 };

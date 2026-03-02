@@ -15,10 +15,19 @@ type User = {
 };
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Loader } from './components/Loader';
+import { DashboardLayout } from './components/DashboardLayout';
+import { MyCoursesPage } from './pages/MyCoursesPage';
+import { RecommendedPage } from './pages/RecommendedPage';
+import { AssignmentsPage } from './pages/AssignmentsPage';
+import { ExamsPage } from './pages/ExamsPage';
+import { PerformancePage } from './pages/PerformancePage';
+import { AITutorPage } from './pages/AITutorPage';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -38,17 +47,17 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    setCurrentUser(null);
+    setIsLoggingOut(true);
+    setTimeout(() => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setCurrentUser(null);
+      setIsLoggingOut(false);
+    }, 800); // Small delay to show the loader as requested
   };
 
   if (loading) {
-    return (
-      <div className="auth-shell">
-        <div className="auth-card">Loading...</div>
-      </div>
-    );
+    return <Loader message="Initializing Lumina..." />;
   }
 
   return (
@@ -66,20 +75,32 @@ const App: React.FC = () => {
             currentUser ? <Navigate to="/dashboard" replace /> : <SignupPage onSignupSuccess={handleAuthSuccess} />
           }
         />
+        
+        {/* Protected Dashboard Routes */}
         <Route
           path="/dashboard"
           element={
             currentUser ? (
-              <DashboardPage user={currentUser} onLogout={handleLogout} />
+              <DashboardLayout user={currentUser} onLogout={handleLogout} />
             ) : (
               <Navigate to="/login" replace />
             )
           }
-        />
+        >
+          <Route index element={<DashboardPage user={currentUser!} onLogout={handleLogout} />} />
+          <Route path="courses" element={<MyCoursesPage />} />
+          <Route path="recommended" element={<RecommendedPage />} />
+          <Route path="assignments" element={<AssignmentsPage />} />
+          <Route path="exams" element={<ExamsPage />} />
+          <Route path="performance" element={<PerformancePage />} />
+          <Route path="ai-tutor" element={<AITutorPage />} />
+        </Route>
+
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         {/* Fallback for undefined routes */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      {isLoggingOut && <Loader message="Signing out securely..." />}
     </BrowserRouter>
   );
 };
