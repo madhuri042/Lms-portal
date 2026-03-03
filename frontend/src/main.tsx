@@ -12,6 +12,10 @@ type User = {
   lastName: string;
   email: string;
   role: string;
+  isUpgraded?: boolean;
+  upgradeExpiry?: string;
+  remainingDays?: number;
+  subscriptionStatus?: string;
 };
 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -20,9 +24,12 @@ import { DashboardLayout } from './components/DashboardLayout';
 import { MyCoursesPage } from './pages/MyCoursesPage';
 import { RecommendedPage } from './pages/RecommendedPage';
 import { AssignmentsPage } from './pages/AssignmentsPage';
+import { AssignmentDetailPage } from './pages/AssignmentDetailPage';
 import { ExamsPage } from './pages/ExamsPage';
 import { PerformancePage } from './pages/PerformancePage';
 import { AITutorPage } from './pages/AITutorPage';
+import { SystemReportsPage } from './pages/SystemReportsPage';
+import { SubmissionsPage } from './pages/SubmissionsPage';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -75,7 +82,7 @@ const App: React.FC = () => {
             currentUser ? <Navigate to="/dashboard" replace /> : <SignupPage onSignupSuccess={handleAuthSuccess} />
           }
         />
-        
+
         {/* Protected Dashboard Routes */}
         <Route
           path="/dashboard"
@@ -91,9 +98,12 @@ const App: React.FC = () => {
           <Route path="courses" element={<MyCoursesPage />} />
           <Route path="recommended" element={<RecommendedPage />} />
           <Route path="assignments" element={<AssignmentsPage />} />
+          <Route path="assignments/:id" element={<AssignmentDetailPage />} />
           <Route path="exams" element={<ExamsPage />} />
           <Route path="performance" element={<PerformancePage />} />
+          <Route path="submissions" element={<SubmissionsPage />} />
           <Route path="ai-tutor" element={<AITutorPage />} />
+          <Route path="reports" element={<SystemReportsPage />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

@@ -29,15 +29,15 @@ exports.register = async (req, res) => {
             pincode
         } = req.body;
 
-        const userExists = await User.findOne({ 
-            $or: [{ email }, { phone }] 
+        const userExists = await User.findOne({
+            $or: [{ email }, { phone }]
         });
 
         if (userExists) {
             const field = userExists.email === email ? 'Email' : 'Phone number';
-            return res.status(400).json({ 
-                success: false, 
-                message: `${field} already exists` 
+            return res.status(400).json({
+                success: false,
+                message: `${field} already exists`
             });
         }
 
@@ -127,6 +127,7 @@ exports.login = async (req, res) => {
 exports.getMe = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
+
         res.status(200).json({
             success: true,
             data: user,
@@ -135,3 +136,4 @@ exports.getMe = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+

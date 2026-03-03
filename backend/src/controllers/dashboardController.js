@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const Course = require('../models/Course');
 const Assignment = require('../models/Assignment');
+const AssignmentSubmission = require('../models/AssignmentSubmission');
+const AcademicExam = require('../models/AcademicExam');
 const OnlineExam = require('../models/OnlineExam');
 const Progress = require('../models/Progress');
 
@@ -74,10 +76,24 @@ exports.getStudentDashboard = async (req, res) => {
         const enrolledCourses = await Course.find({ enrolledStudents: studentId });
         const courseIds = enrolledCourses.map((c) => c._id);
 
+        // Match Assignments page: count all assignments (GET /api/assignments returns all)
+        const totalAssignments = await Assignment.countDocuments({});
+
         const pendingAssignments = await Assignment.countDocuments({
             course: { $in: courseIds },
-            // Note: A more complex query would exclude those the student has already submitted
         });
+
+        const submittedAssignmentsCount = await AssignmentSubmission.countDocuments({
+            student: studentId,
+            status: 'Submitted',
+        });
+
+        const evaluatedAssignmentsCount = await AssignmentSubmission.countDocuments({
+            student: studentId,
+            status: 'Evaluated',
+        });
+
+        const totalExamsRemaining = await AcademicExam.countDocuments({ user: studentId });
 
         const upcomingExams = await OnlineExam.countDocuments({
             course: { $in: courseIds },
@@ -92,6 +108,10 @@ exports.getStudentDashboard = async (req, res) => {
                 totalEnrolledCourses: enrolledCourses.length,
                 pendingAssignments,
                 upcomingExams,
+                totalAssignments,
+                submittedAssignmentsCount,
+                evaluatedAssignmentsCount,
+                totalExamsRemaining,
                 progressReports,
             },
         });

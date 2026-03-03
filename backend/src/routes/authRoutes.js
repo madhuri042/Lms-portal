@@ -9,5 +9,6 @@ router.post('/register', register);
 router.post('/login', login);
 
 router.get('/me', protect, getMe);
+router.get('/test', (req, res) => res.json({ message: 'Auth routes are working' }));
 
 module.exports = router;

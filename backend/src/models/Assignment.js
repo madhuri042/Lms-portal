@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const mcqQuestionSchema = new mongoose.Schema({
+    questionText: { type: String, required: true },
+    options: [{ type: String }],
+    correctAnswer: { type: String },
+    marks: { type: Number, required: true, default: 1 },
+}, { _id: true });
+
 const assignmentSchema = new mongoose.Schema(
     {
         title: {
@@ -9,6 +16,11 @@ const assignmentSchema = new mongoose.Schema(
         description: {
             type: String,
             required: [true, 'Please add a description'],
+        },
+        type: {
+            type: String,
+            enum: ['mcq', 'programming'],
+            default: 'programming',
         },
         course: {
             type: mongoose.Schema.ObjectId,
@@ -29,6 +41,8 @@ const assignmentSchema = new mongoose.Schema(
             required: [true, 'Please add total marks for this assignment'],
             default: 100,
         },
+        // For MCQ assignments: array of questions (same shape as exam)
+        questions: [mcqQuestionSchema],
     },
     { timestamps: true }
 );

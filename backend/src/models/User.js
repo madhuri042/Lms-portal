@@ -52,6 +52,13 @@ const userSchema = new mongoose.Schema(
             type: String,
             match: [/^[0-9]{6}$/, 'Pincode must be exactly 6 digits']
         },
+        isUpgraded: {
+            type: Boolean,
+            default: false,
+        },
+        upgradeExpiry: {
+            type: Date,
+        },
     },
     { timestamps: true }
 );

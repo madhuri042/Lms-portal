@@ -14,8 +14,13 @@ const assignmentSubmissionSchema = new mongoose.Schema(
         },
         fileUrl: {
             type: String,
-            required: [true, 'Please upload a submission file'],
+            required: false, // Not required for MCQ (answers stored in answers array)
         },
+        // For MCQ: [{ questionId, answerGiven }]; marksObtained set on submit
+        answers: [{
+            questionId: mongoose.Schema.Types.ObjectId,
+            answerGiven: String,
+        }],
         status: {
             type: String,
             enum: ['Submitted', 'Evaluated', 'Pending'],
