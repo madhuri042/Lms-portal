@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader } from '../components/Loader';
 
 type MySubmission = {
@@ -57,7 +57,24 @@ export const AssignmentsPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submissionType, setSubmissionType] = useState<'document' | 'code'>('document');
+  const [searchParams] = useSearchParams();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Deep linking: Handle assignment and filter params
+  useEffect(() => {
+    const assignmentId = searchParams.get('assignment');
+    const filterParam = searchParams.get('filter') as any;
+
+    if (assignmentId) {
+      setSelectedId(assignmentId);
+      // Reset filter to all if assignment is specified to ensure it's visible
+      if (!filterParam) setFilter('all');
+    }
+
+    if (filterParam && ['all', 'pending', 'submitted', 'evaluated'].includes(filterParam)) {
+      setFilter(filterParam);
+    }
+  }, [searchParams]);
 
   const fetchAssignments = async () => {
     const token = localStorage.getItem('token');
@@ -294,8 +311,23 @@ export const AssignmentsPage: React.FC = () => {
             <div className="assignments-page__detail-inner">
               {selected ? (
                 <>
-                  <h2 className="assignments-page__detail-title">{selected.title}</h2>
-                  <p className="assignments-page__detail-course">{getCourseName(selected.course)}</p>
+                  <div className="assignments-page__detail-header">
+                    <div>
+                      <h2 className="assignments-page__detail-title">{selected.title}</h2>
+                      <p className="assignments-page__detail-course">{getCourseName(selected.course)}</p>
+                    </div>
+                    <button
+                      type="button"
+                      className="assignments-page__detail-close"
+                      onClick={() => setSelectedId(null)}
+                      aria-label="Close assignment"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
 
                   <div className="assignments-page__meta-row">
                     <div className="assignments-page__meta-card">
@@ -347,79 +379,91 @@ export const AssignmentsPage: React.FC = () => {
 
                   {selected.type !== 'mcq' && (
                     <>
-                      <p className="assignments-page__description-title" style={{ marginBottom: 10 }}>Submission type</p>
-                      <div className="assignments-page__type-tabs">
-                        <button
-                          type="button"
-                          className={`assignments-page__type-tab ${submissionType === 'document' ? 'assignments-page__type-tab--active' : ''}`}
-                          onClick={() => setSubmissionType('document')}
-                        >
-                          Document
-                        </button>
-                        <button
-                          type="button"
-                          className={`assignments-page__type-tab ${submissionType === 'code' ? 'assignments-page__type-tab--active' : ''}`}
-                          onClick={() => setSubmissionType('code')}
-                        >
-                          Code / ZIP
-                        </button>
-                      </div>
-
-                      <div
-                        role="button"
-                        tabIndex={0}
-                        className={`assignments-page__upload-zone ${uploadFile ? 'assignments-page__upload-zone--has-file' : ''}`}
-                        onClick={() => fileInputRef.current?.click()}
-                        onDrop={handleDrop}
-                        onDragOver={handleDragOver}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            fileInputRef.current?.click();
-                          }
-                        }}
-                      >
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          style={{ position: 'absolute', width: 1, height: 1, opacity: 0, overflow: 'hidden' }}
-                          onChange={handleFileChange}
-                          aria-label="Choose file"
-                        />
-                        <div className="assignments-page__upload-icon">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z" />
-                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
-                          </svg>
+                      {selected.mySubmission ? (
+                        <div className="assignments-page__upload-disabled">
+                          <p className="assignments-page__upload-disabled-text">
+                            {selected.mySubmission.status === 'Evaluated'
+                              ? 'This assignment has been evaluated. Upload is closed.'
+                              : 'You have already submitted this assignment. Upload is closed.'}
+                          </p>
                         </div>
-                        <p className="assignments-page__upload-text">Drop your file here or click to browse</p>
-                        <p className="assignments-page__upload-hint">PDF, DOCX, ZIP, JS, PY, etc. — up to {MAX_FILE_SIZE_MB} MB</p>
-                        {uploadFile && (
-                          <p style={{ marginTop: 12, fontWeight: 600, color: 'var(--ap-accent)' }}>{uploadFile.name}</p>
-                        )}
-                      </div>
+                      ) : (
+                        <>
+                          <p className="assignments-page__description-title" style={{ marginBottom: 10 }}>Submission type</p>
+                          <div className="assignments-page__type-tabs">
+                            <button
+                              type="button"
+                              className={`assignments-page__type-tab ${submissionType === 'document' ? 'assignments-page__type-tab--active' : ''}`}
+                              onClick={() => setSubmissionType('document')}
+                            >
+                              Document
+                            </button>
+                            <button
+                              type="button"
+                              className={`assignments-page__type-tab ${submissionType === 'code' ? 'assignments-page__type-tab--active' : ''}`}
+                              onClick={() => setSubmissionType('code')}
+                            >
+                              Code / ZIP
+                            </button>
+                          </div>
 
-                      {submitError && (
-                        <div className="assignments-page__error" style={{ marginBottom: 16 }}>{submitError}</div>
+                          <div
+                            role="button"
+                            tabIndex={0}
+                            className={`assignments-page__upload-zone ${uploadFile ? 'assignments-page__upload-zone--has-file' : ''}`}
+                            onClick={() => fileInputRef.current?.click()}
+                            onDrop={handleDrop}
+                            onDragOver={handleDragOver}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                fileInputRef.current?.click();
+                              }
+                            }}
+                          >
+                            <input
+                              ref={fileInputRef}
+                              type="file"
+                              style={{ position: 'absolute', width: 1, height: 1, opacity: 0, overflow: 'hidden' }}
+                              onChange={handleFileChange}
+                              aria-label="Choose file"
+                            />
+                            <div className="assignments-page__upload-icon">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z" />
+                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
+                              </svg>
+                            </div>
+                            <p className="assignments-page__upload-text">Drop your file here or click to browse</p>
+                            <p className="assignments-page__upload-hint">PDF, DOCX, ZIP, JS, PY, etc. — up to {MAX_FILE_SIZE_MB} MB</p>
+                            {uploadFile && (
+                              <p style={{ marginTop: 12, fontWeight: 600, color: 'var(--ap-accent)' }}>{uploadFile.name}</p>
+                            )}
+                          </div>
+
+                          {submitError && (
+                            <div className="assignments-page__error" style={{ marginBottom: 16 }}>{submitError}</div>
+                          )}
+
+                          <button
+                            type="button"
+                            className="assignments-page__submit-btn"
+                            onClick={handleSubmitAssignment}
+                            disabled={submitting || !uploadFile}
+                          >
+                            {submitting ? (
+                              'Submitting…'
+                            ) : (
+                              <>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                  <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
+                                </svg>
+                                Submit assignment
+                              </>
+                            )}
+                          </button>
+                        </>
                       )}
-
-                      <button
-                        type="button"
-                        className="assignments-page__submit-btn"
-                        onClick={handleSubmitAssignment}
-                        disabled={submitting || !uploadFile}
-                      >
-                        {submitting ? (
-                          'Submitting…'
-                        ) : (
-                          <>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                              <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z" />
-                            </svg>
-                            Submit assignment
-                          </>
-                        )}
-                      </button>
                     </>
                   )}
                 </>

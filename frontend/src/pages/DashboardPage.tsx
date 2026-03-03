@@ -51,6 +51,26 @@ type DashboardPageProps = {
   onLogout: () => void;
 };
 
+type PendingAssignment = {
+  _id: string;
+  title: string;
+  dueDate: string;
+  course: { _id: string; title: string } | string;
+};
+
+function getCourseTitle(course: PendingAssignment['course']): string {
+  if (typeof course === 'object' && course !== null && 'title' in course) return course.title;
+  return '—';
+}
+
+function formatDueDate(iso: string): string {
+  try {
+    return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch {
+    return iso;
+  }
+}
+
 // Icons as inline SVG components for metric cards
 const IconBook = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -107,6 +127,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
   const [data, setData] = useState<
     AdminDashboardData | InstructorDashboardData | StudentDashboardData | null
   >(null);
+  const [pendingAssignments, setPendingAssignments] = useState<PendingAssignment[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -167,6 +188,35 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
     void fetchDashboard();
   }, [user.role, onLogout]);
 
+  useEffect(() => {
+    if (user.role !== 'student') return;
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const fetchPending = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/assignments`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || !body?.success || !Array.isArray(body?.data)) {
+          setPendingAssignments([]);
+          return;
+        }
+        const list = body.data as Array<{ _id: string; title: string; dueDate: string; course: PendingAssignment['course']; mySubmission?: unknown }>;
+        const pending: PendingAssignment[] = list
+          .filter((a) => !a.mySubmission)
+          .slice(0, 10)
+          .map((a) => ({ _id: a._id, title: a.title, dueDate: a.dueDate, course: a.course }));
+        setPendingAssignments(pending);
+      } catch {
+        setPendingAssignments([]);
+      }
+    };
+
+    void fetchPending();
+  }, [user.role]);
+
   if (loading) {
     return <Loader message="Syncing your data..." />;
   }
@@ -224,24 +274,30 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
               icon={<IconGraduation />}
               color="blue"
             />
-            <MetricCard
-              label="Total assignments"
-              value={(data as StudentDashboardData).totalAssignments}
-              icon={<IconClipboard />}
-              color="green"
-            />
-            <MetricCard
-              label="Submitted"
-              value={(data as StudentDashboardData).submittedAssignmentsCount}
-              icon={<IconSend />}
-              color="amber"
-            />
-            <MetricCard
-              label="Evaluated"
-              value={(data as StudentDashboardData).evaluatedAssignmentsCount}
-              icon={<IconCheckCircle />}
-              color="teal"
-            />
+            <Link to="/dashboard/assignments?filter=all" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <MetricCard
+                label="Total assignments"
+                value={(data as StudentDashboardData).totalAssignments}
+                icon={<IconClipboard />}
+                color="green"
+              />
+            </Link>
+            <Link to="/dashboard/assignments?filter=submitted" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <MetricCard
+                label="Submitted"
+                value={(data as StudentDashboardData).submittedAssignmentsCount}
+                icon={<IconSend />}
+                color="amber"
+              />
+            </Link>
+            <Link to="/dashboard/assignments?filter=evaluated" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <MetricCard
+                label="Evaluated"
+                value={(data as StudentDashboardData).evaluatedAssignmentsCount}
+                icon={<IconCheckCircle />}
+                color="teal"
+              />
+            </Link>
           </div>
 
           {/* Weekly Activity (placeholder bar chart) */}
@@ -275,10 +331,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
                     ['--pct-deg' as string]:
                       (data as StudentDashboardData).totalAssignments > 0
                         ? `${Math.round(
-                            ((data as StudentDashboardData).evaluatedAssignmentsCount /
-                              (data as StudentDashboardData).totalAssignments) *
-                              360
-                          )}deg`
+                          ((data as StudentDashboardData).evaluatedAssignmentsCount /
+                            (data as StudentDashboardData).totalAssignments) *
+                          360
+                        )}deg`
                         : '0deg',
                     ['--progress-color' as string]: '#059669',
                   }}
@@ -287,10 +343,10 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
                     <span className="dashboard-progress-value">
                       {(data as StudentDashboardData).totalAssignments > 0
                         ? Math.round(
-                            ((data as StudentDashboardData).evaluatedAssignmentsCount /
-                              (data as StudentDashboardData).totalAssignments) *
-                              100
-                          )
+                          ((data as StudentDashboardData).evaluatedAssignmentsCount /
+                            (data as StudentDashboardData).totalAssignments) *
+                          100
+                        )
                         : 0}
                       %
                     </span>
@@ -302,7 +358,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
             </div>
           </div>
 
-          {/* Quick actions — use empty space */}
+          {/* Quick actions */}
           <section>
             <h3 className="dashboard-section-title">Quick actions</h3>
             <div className="dashboard-quick-actions">
@@ -323,6 +379,28 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
                 <span>Performance</span>
               </Link>
             </div>
+          </section>
+
+          {/* Pending assignments — below quick actions, single row */}
+          <section>
+            <h3 className="dashboard-section-title">Pending assignments</h3>
+            {pendingAssignments.length === 0 ? (
+              <p className="dashboard-pending-empty">No pending assignments right now.</p>
+            ) : (
+              <div className="dashboard-pending-row">
+                {pendingAssignments.map((a) => (
+                  <Link
+                    key={a._id}
+                    to={`/dashboard/assignments?assignment=${a._id}`}
+                    className="dashboard-pending-card"
+                  >
+                    <span className="dashboard-pending-card__title">{a.title}</span>
+                    <span className="dashboard-pending-card__course">{getCourseTitle(a.course)}</span>
+                    <span className="dashboard-pending-card__due">Due {formatDueDate(a.dueDate)}</span>
+                  </Link>
+                ))}
+              </div>
+            )}
           </section>
 
           {/* Your Learning Progress */}

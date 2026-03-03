@@ -1,6 +1,11 @@
 // @desc    Chat with AI Assistant (uses Google Gemini)
 // @route   POST /api/chat
 // @access  Private
+//
+// Setup: In backend/.env set OPENAI_API_KEY to your Google Gemini API key.
+// 1. Get a key: https://aistudio.google.com/apikey (recommended; API is pre-enabled).
+// 2. Or in Google Cloud: enable "Generative Language API", create an API key, restrict to that API only.
+// 3. Restart the backend after changing .env.
 exports.chatWithAI = async (req, res) => {
     console.log('>>> GEMINI FETCH HIT - Message:', req.body.message);
     try {
@@ -49,11 +54,22 @@ ${courseContext ? `Context about the current course/topic: ${courseContext}` : '
 
         if (!response.ok) {
             const errMsg = data.error?.message || data.error?.status || 'Gemini API failed';
+            const code = data.error?.code || response.status;
             console.error('Gemini API Error Response:', JSON.stringify(data, null, 2));
+
+            // User-friendly hint based on common errors
+            let hint = 'Check that your key is a Google Gemini key and that Generative Language API is enabled.';
+            if (response.status === 403 || (errMsg && errMsg.toLowerCase().includes('permission'))) {
+                hint = 'Create or use an API key from Google AI Studio (https://aistudio.google.com/apikey). If using a key from Google Cloud, enable "Generative Language API" for your project.';
+            } else if (response.status === 400 && errMsg && errMsg.toLowerCase().includes('invalid')) {
+                hint = 'Your API key may be invalid or restricted. Create a new key at https://aistudio.google.com/apikey and avoid IP/referrer restrictions for server use.';
+            }
+
             return res.status(502).json({
                 success: false,
-                message: 'AI service error. Check that your key is a Google Gemini key and that Generative Language API is enabled.',
+                message: 'AI service error. ' + hint,
                 detail: errMsg,
+                code: code,
             });
         }
 
