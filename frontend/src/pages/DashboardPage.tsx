@@ -58,6 +58,15 @@ type PendingAssignment = {
   course: { _id: string; title: string } | string;
 };
 
+type DashboardExam = {
+  _id: string;
+  examName: string;
+  universityName: string;
+  examCode: string;
+  examDate?: string | null;
+  createdAt?: string;
+};
+
 function getCourseTitle(course: PendingAssignment['course']): string {
   if (typeof course === 'object' && course !== null && 'title' in course) return course.title;
   return '—';
@@ -68,6 +77,15 @@ function formatDueDate(iso: string): string {
     return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   } catch {
     return iso;
+  }
+}
+
+function formatExamDate(d: string | null | undefined): string {
+  if (!d) return '—';
+  try {
+    return new Date(d).toLocaleDateString(undefined, { dateStyle: 'medium' });
+  } catch {
+    return '—';
   }
 }
 
@@ -128,6 +146,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
     AdminDashboardData | InstructorDashboardData | StudentDashboardData | null
   >(null);
   const [pendingAssignments, setPendingAssignments] = useState<PendingAssignment[]>([]);
+  const [exams, setExams] = useState<DashboardExam[]>([]);
+  const [selectedExam, setSelectedExam] = useState<DashboardExam | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -215,6 +235,30 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
     };
 
     void fetchPending();
+  }, [user.role]);
+
+  useEffect(() => {
+    if (user.role !== 'student') return;
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const fetchExams = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/academic-exams`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || !body?.success || !Array.isArray(body?.data)) {
+          setExams([]);
+          return;
+        }
+        setExams((body.data as DashboardExam[]).slice(0, 10));
+      } catch {
+        setExams([]);
+      }
+    };
+
+    void fetchExams();
   }, [user.role]);
 
   if (loading) {
@@ -402,6 +446,83 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
               </div>
             )}
           </section>
+
+          {/* Exams — below assignments, click opens detail popup */}
+          <section>
+            <h3 className="dashboard-section-title">Exams</h3>
+            {exams.length === 0 ? (
+              <p className="dashboard-pending-empty">No upcoming exams.</p>
+            ) : (
+              <div className="dashboard-pending-row dashboard-exams-row">
+                {exams.map((exam) => (
+                  <button
+                    key={exam._id}
+                    type="button"
+                    className="dashboard-exam-card"
+                    onClick={() => setSelectedExam(exam)}
+                  >
+                    <span className="dashboard-pending-card__title">{exam.examName}</span>
+                    <span className="dashboard-pending-card__course">{exam.universityName}</span>
+                    <span className="dashboard-pending-card__due">{formatExamDate(exam.examDate)}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Exam details popup */}
+          {selectedExam && (
+            <div
+              className="dashboard-exam-popup-backdrop"
+              onClick={() => setSelectedExam(null)}
+              role="dialog"
+              aria-modal
+              aria-labelledby="dashboard-exam-popup-title"
+            >
+              <div
+                className="dashboard-exam-popup"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="dashboard-exam-popup__header">
+                  <h2 id="dashboard-exam-popup-title" className="dashboard-exam-popup__title">Exam details</h2>
+                  <button
+                    type="button"
+                    className="dashboard-exam-popup__close"
+                    onClick={() => setSelectedExam(null)}
+                    aria-label="Close"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="dashboard-exam-popup__body">
+                  <div className="dashboard-exam-popup__row">
+                    <span className="dashboard-exam-popup__label">Exam name</span>
+                    <span className="dashboard-exam-popup__value">{selectedExam.examName}</span>
+                  </div>
+                  <div className="dashboard-exam-popup__row">
+                    <span className="dashboard-exam-popup__label">University</span>
+                    <span className="dashboard-exam-popup__value">{selectedExam.universityName}</span>
+                  </div>
+                  <div className="dashboard-exam-popup__row">
+                    <span className="dashboard-exam-popup__label">Exam code</span>
+                    <span className="dashboard-exam-popup__value">
+                      <code className="dashboard-exam-popup__code">{selectedExam.examCode}</code>
+                    </span>
+                  </div>
+                  <div className="dashboard-exam-popup__row">
+                    <span className="dashboard-exam-popup__label">Exam date</span>
+                    <span className="dashboard-exam-popup__value">{formatExamDate(selectedExam.examDate)}</span>
+                  </div>
+                  {selectedExam.createdAt && (
+                    <div className="dashboard-exam-popup__row">
+                      <span className="dashboard-exam-popup__label">Added on</span>
+                      <span className="dashboard-exam-popup__value">{formatExamDate(selectedExam.createdAt)}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Your Learning Progress */}
           {(data as StudentDashboardData).progressReports.length > 0 && (

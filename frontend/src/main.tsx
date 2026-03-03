@@ -29,7 +29,9 @@ import { ExamsPage } from './pages/ExamsPage';
 import { PerformancePage } from './pages/PerformancePage';
 import { AITutorPage } from './pages/AITutorPage';
 import { SystemReportsPage } from './pages/SystemReportsPage';
+import { ManageStudentsPage } from './pages/ManageStudentsPage';
 import { SubmissionsPage } from './pages/SubmissionsPage';
+import { CourseDetailPage } from './pages/CourseDetailPage';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -101,7 +103,9 @@ const App: React.FC = () => {
           <Route path="assignments/:id" element={<AssignmentDetailPage />} />
           <Route path="exams" element={<ExamsPage />} />
           <Route path="performance" element={<PerformancePage />} />
+          <Route path="students" element={<ManageStudentsPage />} />
           <Route path="submissions" element={<SubmissionsPage />} />
+          <Route path="courses/:id" element={<CourseDetailPage />} />
           <Route path="ai-tutor" element={<AITutorPage />} />
           <Route path="reports" element={<SystemReportsPage />} />
         </Route>

@@ -6,6 +6,8 @@ const {
     updateCourse,
     deleteCourse,
     enrollCourse,
+    getEnrolledCourses,
+    getTeachingCourses,
 } = require('../controllers/courseController');
 
 const { protect, authorizeRoles } = require('../middlewares/authMiddleware');
@@ -17,16 +19,20 @@ const progressRouter = require('./progressRoutes');
 
 const router = express.Router();
 
-// Re-route into other resource routers
+// 1. Static/Specific Routes (Must be HIGHER than parameterized routes)
+router.route('/enrolled').get(protect, authorizeRoles('student', 'admin'), getEnrolledCourses);
+router.route('/teaching').get(protect, authorizeRoles('instructor', 'admin'), getTeachingCourses);
+
+// 2. Resource Redirection
 router.use('/:courseId/assignments', assignmentRouter);
 router.use('/:courseId/exams', examRouter);
 router.use('/:courseId/progress', progressRouter);
 
-// Public routes for courses
+// 3. Public routes for courses
 router.route('/').get(getCourses);
 router.route('/:id').get(getCourse);
 
-// Protected routes
+// 4. Protected routes
 router
     .route('/')
     .post(protect, authorizeRoles('admin', 'instructor'), createCourse);
@@ -36,7 +42,6 @@ router
     .put(protect, authorizeRoles('admin', 'instructor'), updateCourse)
     .delete(protect, authorizeRoles('admin', 'instructor'), deleteCourse);
 
-// Student enrollment
 router.route('/:id/enroll').post(protect, authorizeRoles('student', 'admin'), enrollCourse);
 
 module.exports = router;

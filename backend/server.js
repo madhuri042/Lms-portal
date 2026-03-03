@@ -52,6 +52,7 @@ app.use('/api/exams', require('./src/routes/examRoutes'));
 app.use('/api/chat', require('./src/routes/chatbotRoutes'));
 app.use('/api/dashboard', require('./src/routes/dashboardRoutes'));
 app.use('/api/notifications', require('./src/routes/notificationRoutes'));
+app.use('/api/recommended-courses', require('./src/routes/recommendedRoutes'));
 
 app.get('/api/debug', (req, res) => {
     const listRoutes = (stack, parentPath = '') => {

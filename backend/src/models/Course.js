@@ -13,6 +13,15 @@ const courseSchema = new mongoose.Schema(
             required: [true, 'Please add a description'],
             maxlength: [1000, 'Description cannot be more than 1000 characters'],
         },
+        coverImage: {
+            type: String,
+            default: '',
+        },
+        category: {
+            type: String,
+            default: '',
+            trim: true,
+        },
         instructor: {
             type: mongoose.Schema.ObjectId,
             ref: 'User',
@@ -34,6 +43,14 @@ const courseSchema = new mongoose.Schema(
             {
                 type: mongoose.Schema.ObjectId,
                 ref: 'User',
+            },
+        ],
+        objectives: [String],
+        outcomes: [String],
+        syllabus: [
+            {
+                moduleTitle: String,
+                lessons: [String],
             },
         ],
     },

@@ -124,3 +124,34 @@ exports.enrollCourse = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+// @desc    Get courses taught by the logged-in instructor
+// @route   GET /api/courses/teaching
+// @access  Private (Instructor, Admin)
+exports.getTeachingCourses = async (req, res) => {
+    try {
+        const instructorId = req.user.id;
+        const courses = await Course.find({ instructor: instructorId })
+            .populate('instructor', 'firstName lastName name email')
+            .lean();
+        const data = courses.map((c) => ({
+            ...c,
+            studentCount: (c.enrolledStudents && c.enrolledStudents.length) || 0,
+        }));
+        res.status(200).json({ success: true, count: data.length, data });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Get enrolled courses for the logged-in student
+// @route   GET /api/courses/enrolled
+// @access  Private (Student, Admin)
+exports.getEnrolledCourses = async (req, res) => {
+    try {
+        const studentId = req.user.id;
+        const courses = await Course.find({ enrolledStudents: studentId }).populate('instructor', 'name email');
+        res.status(200).json({ success: true, count: courses.length, data: courses });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
