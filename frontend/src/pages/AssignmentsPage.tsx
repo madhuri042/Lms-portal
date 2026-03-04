@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader } from '../components/Loader';
+import { useToast } from '../context/ToastContext';
 
 type MySubmission = {
   status: string;
@@ -58,7 +59,7 @@ export const AssignmentsPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submissionType, setSubmissionType] = useState<'document' | 'code'>('document');
   const [searchParams] = useSearchParams();
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   // Deep linking: Handle assignment and filter params
   useEffect(() => {
@@ -185,8 +186,7 @@ export const AssignmentsPage: React.FC = () => {
       }
       setUploadFile(null);
       await fetchAssignments();
-      setSuccessMessage('Assignment submitted successfully.');
-      setTimeout(() => setSuccessMessage(null), 3000);
+      showToast('Assignment submitted successfully.');
     } catch {
       setSubmitError('Could not submit. Check your connection.');
     } finally {
@@ -475,19 +475,6 @@ export const AssignmentsPage: React.FC = () => {
         )}
       </div>
 
-      {successMessage && (
-        <div className="assignments-page__toast" role="status">
-          <span>✓ {successMessage}</span>
-          <button
-            type="button"
-            aria-label="Dismiss"
-            onClick={() => setSuccessMessage(null)}
-            style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 4 }}
-          >
-            ×
-          </button>
-        </div>
-      )}
     </div>
   );
 };

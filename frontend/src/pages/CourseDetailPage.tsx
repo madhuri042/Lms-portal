@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Loader } from '../components/Loader';
+import { useToast } from '../context/ToastContext';
 import './CourseDetailPage.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -8,6 +9,13 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 interface SyllabusModule {
     moduleTitle: string;
     lessons: string[];
+}
+
+interface EnrolledStudent {
+    _id: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
 }
 
 interface CourseDetail {
@@ -20,7 +28,7 @@ interface CourseDetail {
     objectives?: string[];
     outcomes?: string[];
     syllabus?: SyllabusModule[];
-    enrolledStudents?: string[];
+    enrolledStudents?: (string | EnrolledStudent)[];
 }
 
 const IconCheck = () => (
@@ -56,12 +64,26 @@ const IconChevronDown = ({ isOpen }: { isOpen: boolean }) => (
 export const CourseDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
+    const { showToast } = useToast();
     const [course, setCourse] = useState<CourseDetail | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [enrolling, setEnrolling] = useState(false);
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [openModules, setOpenModules] = useState<Record<number, boolean>>({ 0: true });
+    const [currentUser, setCurrentUser] = useState<{ id: string; role: string } | null>(null);
+
+    useEffect(() => {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            try {
+                const u = JSON.parse(userStr);
+                setCurrentUser({ id: u.id, role: u.role || 'student' });
+            } catch {
+                setCurrentUser(null);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -81,7 +103,11 @@ export const CourseDetailPage: React.FC = () => {
                 const userStr = localStorage.getItem('user');
                 if (userStr && data.data.enrolledStudents) {
                     const user = JSON.parse(userStr);
-                    setIsEnrolled(data.data.enrolledStudents.includes(user.id));
+                    const list = data.data.enrolledStudents || [];
+                    const isInList = list.some((s: string | EnrolledStudent) =>
+                        typeof s === 'string' ? s === user.id : s._id === user.id
+                    );
+                    setIsEnrolled(isInList);
                 }
             } catch (err: any) {
                 setError(err.message);
@@ -113,6 +139,7 @@ export const CourseDetailPage: React.FC = () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || 'Failed to enroll');
             setIsEnrolled(true);
+            showToast('Enrolled successfully.');
         } catch (err: any) {
             alert(err.message);
         } finally {
@@ -132,6 +159,13 @@ export const CourseDetailPage: React.FC = () => {
         ? (course.instructor.name || [course.instructor.firstName, course.instructor.lastName].filter(Boolean).join(' '))
         : 'Lead Instructor';
 
+    const enrolledList: EnrolledStudent[] = (course.enrolledStudents || []).filter(
+        (s): s is EnrolledStudent => typeof s === 'object' && s !== null && '_id' in s
+    );
+    const isInstructorView =
+        (currentUser?.role === 'instructor' || currentUser?.role === 'admin') &&
+        (course.instructor?._id === currentUser?.id || currentUser?.role === 'admin');
+
     const coverUrl = course.coverImage?.startsWith('http')
         ? course.coverImage
         : `${API_BASE_URL}${course.coverImage}`;
@@ -143,9 +177,12 @@ export const CourseDetailPage: React.FC = () => {
                 <div className="hero-background" style={{ backgroundImage: `url(${coverUrl})` }} />
 
                 <nav className="course-detail-nav">
-                    <Link to="/dashboard/recommended" className="back-btn-glass">
+                    <Link
+                        to={currentUser?.role === 'instructor' || currentUser?.role === 'admin' ? '/dashboard/courses' : '/dashboard/recommended'}
+                        className="back-btn-glass"
+                    >
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
-                        <span>Back to Explorer</span>
+                        <span>{currentUser?.role === 'instructor' || currentUser?.role === 'admin' ? 'Back to My Courses' : 'Back to Explorer'}</span>
                     </Link>
                 </nav>
 
@@ -165,57 +202,91 @@ export const CourseDetailPage: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="hero-actions-modern">
-                            {isEnrolled ? (
-                                <button className="btn-modern btn-enrolled-status" disabled>
-                                    <IconCheck />
-                                    Already Enrolled
-                                </button>
-                            ) : (
-                                <button className={`btn-modern btn-enroll-primary ${enrolling ? 'loading' : ''}`} onClick={handleEnroll} disabled={enrolling}>
-                                    {enrolling ? 'Enrolling...' : 'Start Learning Now'}
-                                </button>
-                            )}
-                        </div>
+                        {!isInstructorView && (
+                            <div className="hero-actions-modern">
+                                {isEnrolled ? (
+                                    <button className="btn-modern btn-enrolled-status" disabled>
+                                        <IconCheck />
+                                        Already Enrolled
+                                    </button>
+                                ) : (
+                                    <button className={`btn-modern btn-enroll-primary ${enrolling ? 'loading' : ''}`} onClick={handleEnroll} disabled={enrolling}>
+                                        {enrolling ? 'Enrolling...' : 'Start Learning Now'}
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
 
             <div className="course-detail-grid-modern">
                 <div className="detail-main-flow">
-                    <section className="detail-card-modern">
-                        <div className="section-header-modern">
-                            <IconBookOpen />
-                            <h2>Strategic Overview</h2>
-                        </div>
-                        <p className="description-text-modern">{course.description}</p>
-                    </section>
+                    {!isInstructorView && (
+                        <>
+                            <section className="detail-card-modern">
+                                <div className="section-header-modern">
+                                    <IconBookOpen />
+                                    <h2>Strategic Overview</h2>
+                                </div>
+                                <p className="description-text-modern">{course.description}</p>
+                            </section>
 
-                    <div className="detail-two-col">
-                        <section className="detail-card-modern">
-                            <div className="section-header-modern">
-                                <IconTarget />
-                                <h2>Core Objectives</h2>
-                            </div>
-                            <ul className="modern-check-list">
-                                {(course.objectives || []).map((obj, i) => (
-                                    <li key={i}><div className="check-box"><IconCheck /></div>{obj}</li>
-                                ))}
-                            </ul>
-                        </section>
+                            <div className="detail-two-col">
+                                <section className="detail-card-modern">
+                                    <div className="section-header-modern">
+                                        <IconTarget />
+                                        <h2>Core Objectives</h2>
+                                    </div>
+                                    <ul className="modern-check-list">
+                                        {(course.objectives || []).map((obj, i) => (
+                                            <li key={i}><div className="check-box"><IconCheck /></div>{obj}</li>
+                                        ))}
+                                    </ul>
+                                </section>
 
-                        <section className="detail-card-modern">
-                            <div className="section-header-modern">
-                                <IconCheck />
-                                <h2>Key Outcomes</h2>
+                                <section className="detail-card-modern">
+                                    <div className="section-header-modern">
+                                        <IconCheck />
+                                        <h2>Key Outcomes</h2>
+                                    </div>
+                                    <ul className="modern-dot-list">
+                                        {(course.outcomes || []).map((out, i) => (
+                                            <li key={i}>{out}</li>
+                                        ))}
+                                    </ul>
+                                </section>
                             </div>
-                            <ul className="modern-dot-list">
-                                {(course.outcomes || []).map((out, i) => (
-                                    <li key={i}>{out}</li>
-                                ))}
-                            </ul>
+                        </>
+                    )}
+
+                    {isInstructorView && (
+                        <section className="detail-card-modern detail-card-enrolled">
+                            <div className="section-header-modern">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                                <h2>Enrolled Students</h2>
+                            </div>
+                            {enrolledList.length === 0 ? (
+                                <p className="detail-enrolled-empty">No students enrolled yet.</p>
+                            ) : (
+                                <ul className="detail-enrolled-list">
+                                    {enrolledList.map((s) => (
+                                        <li key={s._id} className="detail-enrolled-item">
+                                            <span className="detail-enrolled-name">
+                                                {[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}
+                                            </span>
+                                            {s.email && <span className="detail-enrolled-email">{s.email}</span>}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </section>
-                    </div>
+                    )}
                 </div>
 
                 <aside className="detail-sidebar-modern">
@@ -253,7 +324,7 @@ export const CourseDetailPage: React.FC = () => {
                             )}
                         </div>
 
-                        {!isEnrolled && (
+                        {!isInstructorView && !isEnrolled && (
                             <button className="btn-sidebar-enroll" onClick={handleEnroll} disabled={enrolling}>
                                 {enrolling ? 'Enrolling...' : 'Unlock Full Curriculum'}
                             </button>

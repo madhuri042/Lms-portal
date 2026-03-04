@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useToast } from '../context/ToastContext';
 
 type AcademicExam = {
   _id: string;
@@ -18,7 +19,7 @@ export const ExamsPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const [universityName, setUniversityName] = useState('');
   const [examName, setExamName] = useState('');
@@ -119,8 +120,7 @@ export const ExamsPage: React.FC = () => {
       }
       closeModal();
       await fetchExams();
-      setSuccessMessage('Exam added successfully.');
-      setTimeout(() => setSuccessMessage(null), 3000);
+      showToast('Exam added successfully.');
     } catch {
       setFormError('Could not add exam. Check your connection.');
     } finally {
@@ -143,8 +143,7 @@ export const ExamsPage: React.FC = () => {
         return;
       }
       await fetchExams();
-      setSuccessMessage('Exam deleted successfully.');
-      setTimeout(() => setSuccessMessage(null), 3000);
+      showToast('Exam deleted successfully.');
     } catch {
       setError('Could not delete exam.');
     } finally {
@@ -181,24 +180,6 @@ export const ExamsPage: React.FC = () => {
       {error && (
         <div className="alert alert-danger" role="alert">
           {error}
-        </div>
-      )}
-
-      {/* Success popup */}
-      {successMessage && (
-        <div
-          className="alert alert-success alert-dismissible fade show shadow-sm position-fixed top-0 start-50 translate-middle-x mt-3"
-          style={{ zIndex: 1100, minWidth: 280 }}
-          role="alert"
-        >
-          <span className="me-2">✓</span>
-          {successMessage}
-          <button
-            type="button"
-            className="btn-close"
-            aria-label="Close"
-            onClick={() => setSuccessMessage(null)}
-          />
         </div>
       )}
 

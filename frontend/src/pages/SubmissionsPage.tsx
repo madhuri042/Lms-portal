@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from '../components/Loader';
+import { useToast } from '../context/ToastContext';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -22,7 +23,7 @@ export const SubmissionsPage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [marks, setMarks] = useState<string>('');
   const [feedback, setFeedback] = useState<string>('');
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   const fetchPending = async () => {
     const token = localStorage.getItem('token');
@@ -79,8 +80,7 @@ export const SubmissionsPage: React.FC = () => {
       setEvaluatingId(null);
       setMarks('');
       setFeedback('');
-      setSuccessMessage('Submission evaluated successfully.');
-      setTimeout(() => setSuccessMessage(null), 3000);
+      showToast('Submission evaluated successfully.');
       await fetchPending();
     } catch {
       setError('Could not submit evaluation.');
@@ -104,11 +104,6 @@ export const SubmissionsPage: React.FC = () => {
         Review and grade student assignment submissions.
       </p>
 
-      {successMessage && (
-        <div className="alert alert-success mb-3" role="alert">
-          {successMessage}
-        </div>
-      )}
       {error && (
         <div className="alert alert-danger mb-3" role="alert">
           {error}

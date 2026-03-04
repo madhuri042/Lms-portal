@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Loader } from '../components/Loader';
+import { useToast } from '../context/ToastContext';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -34,6 +35,7 @@ function formatDate(iso: string) {
 export const AssignmentDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [assignment, setAssignment] = useState<AssignmentDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -120,6 +122,7 @@ export const AssignmentDetailPage: React.FC = () => {
       const data = await res.json().catch(() => ({}));
       if (res.ok && data?.success) {
         setMcqSubmitted(true);
+        showToast('Assignment submitted successfully.');
       } else {
         setError(data?.message || 'Failed to submit.');
       }

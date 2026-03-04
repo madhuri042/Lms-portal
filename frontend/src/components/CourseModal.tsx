@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 import './CourseModal.css';
 
 interface CourseModalProps {
@@ -26,6 +27,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
     isEnrolled: initiallyEnrolled,
     getCoverUrl,
 }) => {
+    const { showToast } = useToast();
     const [loading, setLoading] = useState(false);
     const [enrolled, setEnrolled] = useState(initiallyEnrolled);
     const [error, setError] = useState<string | null>(null);
@@ -57,6 +59,7 @@ export const CourseModal: React.FC<CourseModalProps> = ({
 
             setEnrolled(true);
             onEnrollSuccess();
+            showToast('Enrolled successfully.');
         } catch (err: any) {
             setError(err.message);
         } finally {

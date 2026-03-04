@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
+import { ToastProvider } from './context/ToastContext';
 import { LoginPage } from './pages/LoginPage';
 import { SignupPage } from './pages/SignupPage';
 import { DashboardPage } from './pages/DashboardPage';
@@ -70,8 +71,9 @@ const App: React.FC = () => {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <ToastProvider>
+      <BrowserRouter>
+        <Routes>
         <Route
           path="/login"
           element={
@@ -113,9 +115,10 @@ const App: React.FC = () => {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         {/* Fallback for undefined routes */}
         <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-      {isLoggingOut && <Loader message="Signing out securely..." />}
-    </BrowserRouter>
+        </Routes>
+        {isLoggingOut && <Loader message="Signing out securely..." />}
+      </BrowserRouter>
+    </ToastProvider>
   );
 };
 

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Loader } from '../components/Loader';
+import { getCourseCoverUrl } from '../utils/courseCover';
 
 type User = {
   id: string;
@@ -24,6 +25,7 @@ type InstructorDashboardData = {
   totalStudentsEnrolled: number;
   totalAssignments: number;
   totalExams: number;
+  pendingSubmissions?: number;
 };
 
 type ProgressReport = {
@@ -65,6 +67,25 @@ type DashboardExam = {
   examCode: string;
   examDate?: string | null;
   createdAt?: string;
+};
+
+type DashboardCourse = {
+  _id: string;
+  title: string;
+  description: string;
+  coverImage?: string;
+  category?: string;
+};
+
+type InstructorStudentEntry = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  enrolledCourses: string[];
+  progress: number;
+  avgGrade: number | null;
+  status: string;
 };
 
 function getCourseTitle(course: PendingAssignment['course']): string {
@@ -148,6 +169,15 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
   const [pendingAssignments, setPendingAssignments] = useState<PendingAssignment[]>([]);
   const [exams, setExams] = useState<DashboardExam[]>([]);
   const [selectedExam, setSelectedExam] = useState<DashboardExam | null>(null);
+  const [recommendedCourses, setRecommendedCourses] = useState<DashboardCourse[]>([]);
+  const [enrolledCourses, setEnrolledCourses] = useState<DashboardCourse[]>([]);
+  const [teachingCourses, setTeachingCourses] = useState<DashboardCourse[]>([]);
+  const [instructorStudents, setInstructorStudents] = useState<InstructorStudentEntry[]>([]);
+  const recommendedScrollRef = useRef<HTMLDivElement>(null);
+  const enrolledScrollRef = useRef<HTMLDivElement>(null);
+  const pendingScrollRef = useRef<HTMLDivElement>(null);
+  const examsScrollRef = useRef<HTMLDivElement>(null);
+  const teachingScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -261,6 +291,85 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
     void fetchExams();
   }, [user.role]);
 
+  useEffect(() => {
+    if (user.role !== 'student') return;
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const fetchRecommended = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/recommended-courses`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (res.ok && Array.isArray(body?.data)) {
+          setRecommendedCourses(body.data.slice(0, 20));
+        }
+      } catch {
+        setRecommendedCourses([]);
+      }
+    };
+
+    const fetchEnrolled = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/courses/enrolled`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (res.ok && Array.isArray(body?.data)) {
+          setEnrolledCourses(body.data);
+        }
+      } catch {
+        setEnrolledCourses([]);
+      }
+    };
+
+    fetchRecommended();
+    fetchEnrolled();
+  }, [user.role]);
+
+  useEffect(() => {
+    if (user.role !== 'instructor') return;
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    const fetchTeaching = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/courses/teaching`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (res.ok && Array.isArray(body?.data)) {
+          setTeachingCourses(body.data);
+        }
+      } catch {
+        setTeachingCourses([]);
+      }
+    };
+    fetchTeaching();
+
+    const fetchInstructorStudents = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/instructor/students`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (res.ok && Array.isArray(body?.data)) {
+          setInstructorStudents(body.data.slice(0, 8));
+        }
+      } catch {
+        setInstructorStudents([]);
+      }
+    };
+    fetchInstructorStudents();
+  }, [user.role]);
+
+  const scrollRow = useCallback((ref: React.RefObject<HTMLDivElement | null>, direction: 'left' | 'right') => {
+    const el = ref.current;
+    if (!el) return;
+    const step = 320;
+    el.scrollBy({ left: direction === 'left' ? -step : step, behavior: 'smooth' });
+  }, []);
+
   if (loading) {
     return <Loader message="Syncing your data..." />;
   }
@@ -277,11 +386,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
 
   const firstName = user.firstName || 'there';
 
+  const welcomeSubtitle =
+    user.role === 'instructor'
+      ? 'Manage your courses and students here.'
+      : user.role === 'admin'
+        ? 'Overview of your platform and users.'
+        : 'Track your learning goals and achievements here.';
+
   return (
     <div className="dashboard-page">
       <header className="dashboard-welcome">
         <h1>Welcome back, {firstName}!</h1>
-        <p>Track your learning goals and achievements here.</p>
+        <p>{welcomeSubtitle}</p>
       </header>
 
       {/* Admin metrics */}
@@ -296,15 +412,143 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         </>
       )}
 
-      {/* Instructor metrics */}
+      {/* Instructor dashboard */}
       {user.role === 'instructor' && data && (
         <>
           <div className="dashboard-metrics">
-            <MetricCard label="My Courses" value={(data as InstructorDashboardData).totalCourses} icon={<IconBook />} color="blue" />
-            <MetricCard label="Students Enrolled" value={(data as InstructorDashboardData).totalStudentsEnrolled} icon={<IconUsers />} color="green" />
-            <MetricCard label="Assignments" value={(data as InstructorDashboardData).totalAssignments} icon={<IconClipboard />} color="purple" />
+            <Link to="/dashboard/courses" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <MetricCard label="My Courses" value={(data as InstructorDashboardData).totalCourses} icon={<IconBook />} color="blue" />
+            </Link>
+            <Link to="/dashboard/students" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <MetricCard label="Students Enrolled" value={(data as InstructorDashboardData).totalStudentsEnrolled} icon={<IconUsers />} color="green" />
+            </Link>
+            <Link to="/dashboard/assignments" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <MetricCard label="Assignments" value={(data as InstructorDashboardData).totalAssignments} icon={<IconClipboard />} color="purple" />
+            </Link>
+            <Link to="/dashboard/assignments" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <MetricCard
+                label="Pending to evaluate"
+                value={(data as InstructorDashboardData).pendingSubmissions ?? 0}
+                icon={<IconSend />}
+                color="amber"
+              />
+            </Link>
             <MetricCard label="Exams" value={(data as InstructorDashboardData).totalExams} icon={<IconGraduation />} color="teal" />
           </div>
+
+          {/* Quick actions */}
+          <section className="dashboard-section">
+            <h3 className="dashboard-section-title">Quick actions</h3>
+            <div className="dashboard-quick-actions">
+              <Link to="/dashboard/courses" className="dashboard-quick-action">
+                <IconBook />
+                <span>My courses</span>
+              </Link>
+              <Link to="/dashboard/students" className="dashboard-quick-action">
+                <IconUsers />
+                <span>Manage students</span>
+              </Link>
+              <Link to="/dashboard/assignments" className="dashboard-quick-action">
+                <IconClipboard />
+                <span>Assignments</span>
+              </Link>
+              <Link to="/dashboard/reports" className="dashboard-quick-action">
+                <IconPerformance />
+                <span>System reports</span>
+              </Link>
+            </div>
+          </section>
+
+          {/* Your courses — horizontal row */}
+          <section className="dashboard-section">
+            <div className="dashboard-row-header">
+              <h3 className="dashboard-section-title mb-0">Your courses</h3>
+              {teachingCourses.length > 0 && (
+                <div className="dashboard-row-arrows">
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(teachingScrollRef, 'left')}
+                    aria-label="Scroll left"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(teachingScrollRef, 'right')}
+                    aria-label="Scroll right"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+                  </button>
+                </div>
+              )}
+            </div>
+            {teachingCourses.length === 0 ? (
+              <p className="dashboard-pending-empty">You don&apos;t have any courses yet.</p>
+            ) : (
+              <div className="dashboard-courses-row dashboard-row-no-scroll" ref={teachingScrollRef}>
+                {teachingCourses.map((course) => (
+                  <Link
+                    key={course._id}
+                    to={`/dashboard/courses/${course._id}`}
+                    className="dashboard-course-card"
+                  >
+                    <div className="dashboard-course-card__cover">
+                      <img src={getCourseCoverUrl(API_BASE_URL, course)} alt="" className="dashboard-course-card__img" />
+                      {course.category && <span className="dashboard-course-card__category">{course.category}</span>}
+                    </div>
+                    <div className="dashboard-course-card__body">
+                      <h4 className="dashboard-course-card__title">{course.title}</h4>
+                      <p className="dashboard-course-card__desc">
+                        {course.description ? (course.description.length > 80 ? course.description.slice(0, 80) + '…' : course.description) : '—'}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Your students — list below My courses; click -> Manage Students */}
+          <section className="dashboard-section">
+            <div className="dashboard-row-header">
+              <h3 className="dashboard-section-title mb-0">Your students</h3>
+              {instructorStudents.length > 0 && (
+                <Link to="/dashboard/students" className="dashboard-section-link">
+                  Manage students →
+                </Link>
+              )}
+            </div>
+            {instructorStudents.length === 0 ? (
+              <p className="dashboard-pending-empty">No students enrolled in your courses yet.</p>
+            ) : (
+              <ul className="dashboard-students-list">
+                {instructorStudents.map((s) => (
+                  <li key={s._id}>
+                    <Link to="/dashboard/students" className="dashboard-student-row">
+                      <div className="dashboard-student-avatar" aria-hidden>
+                        {[s.firstName, s.lastName].filter(Boolean).join(' ').charAt(0).toUpperCase() || '?'}
+                      </div>
+                      <div className="dashboard-student-info">
+                        <span className="dashboard-student-name">
+                          {[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}
+                        </span>
+                        <span className="dashboard-student-email">{s.email}</span>
+                        {s.enrolledCourses.length > 0 && (
+                          <span className="dashboard-student-courses">
+                            {s.enrolledCourses.slice(0, 2).join(', ')}
+                            {s.enrolledCourses.length > 2 ? ` +${s.enrolledCourses.length - 2}` : ''}
+                          </span>
+                        )}
+                      </div>
+                      <span className="dashboard-student-progress">{s.progress}%</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </>
       )}
 
@@ -403,7 +647,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
           </div>
 
           {/* Quick actions */}
-          <section>
+          <section className="dashboard-section">
             <h3 className="dashboard-section-title">Quick actions</h3>
             <div className="dashboard-quick-actions">
               <Link to="/dashboard/assignments" className="dashboard-quick-action">
@@ -425,13 +669,137 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
             </div>
           </section>
 
-          {/* Pending assignments — below quick actions, single row */}
-          <section>
-            <h3 className="dashboard-section-title">Pending assignments</h3>
+          {/* Recommended courses — horizontal row with arrows */}
+          <section className="dashboard-section">
+            <div className="dashboard-row-header">
+              <h3 className="dashboard-section-title mb-0">Recommended for you</h3>
+              {recommendedCourses.length > 0 && (
+                <div className="dashboard-row-arrows">
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(recommendedScrollRef, 'left')}
+                    aria-label="Scroll left"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(recommendedScrollRef, 'right')}
+                    aria-label="Scroll right"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+                  </button>
+                </div>
+              )}
+            </div>
+            {recommendedCourses.length === 0 ? (
+              <p className="dashboard-pending-empty">No recommendations right now.</p>
+            ) : (
+              <div className="dashboard-courses-row dashboard-row-no-scroll" ref={recommendedScrollRef}>
+                {recommendedCourses.map((course) => (
+                  <Link
+                    key={course._id}
+                    to={`/dashboard/courses/${course._id}`}
+                    className="dashboard-course-card"
+                  >
+                    <div className="dashboard-course-card__cover">
+                      <img src={getCourseCoverUrl(API_BASE_URL, course)} alt="" className="dashboard-course-card__img" />
+                      {course.category && <span className="dashboard-course-card__category">{course.category}</span>}
+                    </div>
+                    <div className="dashboard-course-card__body">
+                      <h4 className="dashboard-course-card__title">{course.title}</h4>
+                      <p className="dashboard-course-card__desc">
+                        {course.description ? (course.description.length > 80 ? course.description.slice(0, 80) + '…' : course.description) : '—'}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Enrolled courses — horizontal row with arrows */}
+          <section className="dashboard-section">
+            <div className="dashboard-row-header">
+              <h3 className="dashboard-section-title mb-0">Your enrolled courses</h3>
+              {enrolledCourses.length > 0 && (
+                <div className="dashboard-row-arrows">
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(enrolledScrollRef, 'left')}
+                    aria-label="Scroll left"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(enrolledScrollRef, 'right')}
+                    aria-label="Scroll right"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+                  </button>
+                </div>
+              )}
+            </div>
+            {enrolledCourses.length === 0 ? (
+              <p className="dashboard-pending-empty">You haven&apos;t enrolled in any courses yet.</p>
+            ) : (
+              <div className="dashboard-courses-row dashboard-row-no-scroll" ref={enrolledScrollRef}>
+                {enrolledCourses.map((course) => (
+                  <Link
+                    key={course._id}
+                    to={`/dashboard/courses/${course._id}`}
+                    className="dashboard-course-card"
+                  >
+                    <div className="dashboard-course-card__cover">
+                      <img src={getCourseCoverUrl(API_BASE_URL, course)} alt="" className="dashboard-course-card__img" />
+                      {course.category && <span className="dashboard-course-card__category">{course.category}</span>}
+                    </div>
+                    <div className="dashboard-course-card__body">
+                      <h4 className="dashboard-course-card__title">{course.title}</h4>
+                      <p className="dashboard-course-card__desc">
+                        {course.description ? (course.description.length > 80 ? course.description.slice(0, 80) + '…' : course.description) : '—'}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Pending assignments — single row with arrows, no scrollbar */}
+          <section className="dashboard-section">
+            <div className="dashboard-row-header">
+              <h3 className="dashboard-section-title mb-0">Pending assignments</h3>
+              {pendingAssignments.length > 0 && (
+                <div className="dashboard-row-arrows">
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(pendingScrollRef, 'left')}
+                    aria-label="Scroll left"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(pendingScrollRef, 'right')}
+                    aria-label="Scroll right"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+                  </button>
+                </div>
+              )}
+            </div>
             {pendingAssignments.length === 0 ? (
               <p className="dashboard-pending-empty">No pending assignments right now.</p>
             ) : (
-              <div className="dashboard-pending-row">
+              <div className="dashboard-pending-row dashboard-row-no-scroll" ref={pendingScrollRef}>
                 {pendingAssignments.map((a) => (
                   <Link
                     key={a._id}
@@ -447,13 +815,35 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
             )}
           </section>
 
-          {/* Exams — below assignments, click opens detail popup */}
-          <section>
-            <h3 className="dashboard-section-title">Exams</h3>
+          {/* Exams — row with arrows, no scrollbar */}
+          <section className="dashboard-section">
+            <div className="dashboard-row-header">
+              <h3 className="dashboard-section-title mb-0">Exams</h3>
+              {exams.length > 0 && (
+                <div className="dashboard-row-arrows">
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(examsScrollRef, 'left')}
+                    aria-label="Scroll left"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
+                  </button>
+                  <button
+                    type="button"
+                    className="dashboard-arrow-btn"
+                    onClick={() => scrollRow(examsScrollRef, 'right')}
+                    aria-label="Scroll right"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
+                  </button>
+                </div>
+              )}
+            </div>
             {exams.length === 0 ? (
               <p className="dashboard-pending-empty">No upcoming exams.</p>
             ) : (
-              <div className="dashboard-pending-row dashboard-exams-row">
+              <div className="dashboard-pending-row dashboard-exams-row dashboard-row-no-scroll" ref={examsScrollRef}>
                 {exams.map((exam) => (
                   <button
                     key={exam._id}
