@@ -110,7 +110,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         <section className="auth-card">
           <div className="auth-brand">
             <div className="auth-brand-badge">L</div>
-            <h2 className="auth-brand-title">Lumina</h2>
+            <h2 className="auth-brand-title">Vidya Bridge</h2>
           </div>
           <h1 className="auth-heading">Sign in</h1>
           <p className="auth-subheading">Welcome back! Please enter your details.</p>

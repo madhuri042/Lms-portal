@@ -51,6 +51,7 @@ const navSections: Array<{
       { label: 'Activity Logs', to: '/dashboard/admin/reports/activity', icon: 'activity' },
     ],
   },
+  { label: 'Profile', to: '/dashboard/admin/profile', icon: 'profile' },
   { label: 'Settings', to: '/dashboard/admin/settings', icon: 'settings' },
 ];
 
@@ -82,6 +83,8 @@ const IconSvg = ({ name }: { name: string }) => {
       return <svg {...common}><line x1="12" y1="20" x2="12" y2="10" /><line x1="18" y1="20" x2="18" y2="4" /><line x1="6" y1="20" x2="6" y2="16" /></svg>;
     case 'activity':
       return <svg {...common}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>;
+    case 'profile':
+      return <svg {...common}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>;
     case 'settings':
       return <svg {...common}><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>;
     default:
@@ -90,10 +93,7 @@ const IconSvg = ({ name }: { name: string }) => {
 };
 
 export const AdminSidebar: React.FC = () => {
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    'User Management': true,
-    Courses: true,
-  });
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({});
 
   const toggleSection = (label: string) => {
     setOpenSections((prev) => ({ ...prev, [label]: !prev[label] }));
@@ -108,7 +108,7 @@ export const AdminSidebar: React.FC = () => {
             <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
           </svg>
         </div>
-        <span className="fw-bold fs-5 text-dark">Lumina</span>
+        <span className="fw-bold fs-5 text-dark">Vidya Bridge</span>
         <span className="sidebar-admin-badge" title="Administrator">Admin</span>
       </div>
 

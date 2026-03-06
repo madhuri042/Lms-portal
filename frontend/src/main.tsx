@@ -50,6 +50,7 @@ import { AdminAssignmentsReviewsPage } from './admin/AdminAssignmentsReviewsPage
 import { AdminActivityLogsPage } from './admin/AdminActivityLogsPage';
 import { AdminNotificationsPage } from './admin/AdminNotificationsPage';
 import { AdminSettingsPage } from './admin/AdminSettingsPage';
+import { ProfileSettingsPage } from './pages/ProfileSettingsPage';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -73,6 +74,10 @@ const App: React.FC = () => {
     setCurrentUser(user);
   };
 
+  const handleProfileUpdate = (updated: User) => {
+    setCurrentUser(updated);
+  };
+
   const handleLogout = () => {
     setIsLoggingOut(true);
     setTimeout(() => {
@@ -84,7 +89,7 @@ const App: React.FC = () => {
   };
 
   if (loading) {
-    return <Loader message="Initializing Lumina..." />;
+    return <Loader message="Initializing Vidya Bridge..." />;
   }
 
   return (
@@ -112,7 +117,7 @@ const App: React.FC = () => {
           }
         />
 
-        {/* Admin Dashboard (Lumina Admin Panel) */}
+        {/* Admin Dashboard (Vidya Bridge Admin Panel) */}
         <Route
           path="/dashboard/admin"
           element={
@@ -138,6 +143,7 @@ const App: React.FC = () => {
           <Route path="reports/analytics" element={<AdminReportsPage />} />
           <Route path="reports/activity" element={<AdminActivityLogsPage />} />
           <Route path="notifications" element={<AdminNotificationsPage />} />
+          <Route path="profile" element={<ProfileSettingsPage user={currentUser!} onProfileUpdate={handleProfileUpdate} />} />
           <Route path="settings" element={<AdminSettingsPage />} />
         </Route>
 
@@ -174,6 +180,7 @@ const App: React.FC = () => {
           <Route path="courses/:id/learn" element={<CourseLearnPage />} />
           <Route path="ai-tutor" element={<AITutorPage />} />
           <Route path="reports" element={<SystemReportsPage />} />
+          <Route path="settings" element={<ProfileSettingsPage user={currentUser!} onProfileUpdate={handleProfileUpdate} />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

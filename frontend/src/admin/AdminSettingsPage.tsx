@@ -4,7 +4,7 @@ import { Settings as SettingsIcon, Save, Building2, Lock } from 'lucide-react';
 export const AdminSettingsPage: React.FC = () => {
   const [saved, setSaved] = useState(false);
   const [form, setForm] = useState({
-    platformName: 'Lumina',
+    platformName: 'Vidya Bridge',
     supportEmail: '',
     minCourseApproval: '1',
     allowPublicSignup: true,
@@ -60,7 +60,7 @@ export const AdminSettingsPage: React.FC = () => {
                 value={form.supportEmail}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                placeholder="support@lumina.com"
+                placeholder="support@vidyabridge.com"
               />
             </div>
           </div>

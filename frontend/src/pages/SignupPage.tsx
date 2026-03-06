@@ -203,7 +203,7 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onSignupSuccess }) => {
               <div className="auth-step">
                 <div className="auth-brand">
                   <div className="auth-brand-badge">L</div>
-                  <h2 className="auth-brand-title">Lumina</h2>
+                  <h2 className="auth-brand-title">Vidya Bridge</h2>
                   <p className="auth-brand-subtitle">Level up your learning</p>
                 </div>
                 <h1 className="auth-heading">Join the Future</h1>
@@ -421,7 +421,7 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onSignupSuccess }) => {
             {currentStep === 'ROLE' && (
               <div className="auth-step">
                 <h1 className="auth-heading">Choose Your Role</h1>
-                <p className="auth-subheading">How do you plan to use Lumina?</p>
+                <p className="auth-subheading">How do you plan to use Vidya Bridge?</p>
                 <div className="auth-field">
                   <label className="auth-label">I am a...</label>
                   <select name="role" value={form.role} onChange={handleChange} className="auth-select">
@@ -463,7 +463,7 @@ export const SignupPage: React.FC<SignupPageProps> = ({ onSignupSuccess }) => {
 
                 <h1 className="auth-heading" style={{ color: '#10b981' }}>Signup Successful!</h1>
                 <p className="auth-subheading" style={{ maxWidth: '320px', margin: '0 auto 32px' }}>
-                  Welcome to the Lumina community, <strong>{form.firstName}</strong>!
+                  Welcome to the Vidya Bridge community, <strong>{form.firstName}</strong>!
                   Your account has been created successfully. You can now Login to access your personalized learning dashboard.
                 </p>
 

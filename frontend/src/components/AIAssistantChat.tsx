@@ -9,7 +9,7 @@ interface Message {
 
 export const AIAssistantChat: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([
-        { id: '1', role: 'assistant', content: "Hello! I'm your Lumina AI Assistant. How can I help you with your studies today?" }
+        { id: '1', role: 'assistant', content: "Hello! I'm your Vidya Bridge AI Assistant. How can I help you with your studies today?" }
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -91,7 +91,7 @@ export const AIAssistantChat: React.FC = () => {
             <div className="ai-chat-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                     <img src={roboIcon} alt="AI Agent" />
-                    <h3>Lumina AI Assistant</h3>
+                    <h3>Vidya Bridge AI Assistant</h3>
                 </div>
                 <button
                     onClick={async () => {

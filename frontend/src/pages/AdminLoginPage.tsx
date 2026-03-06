@@ -113,7 +113,7 @@ export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onLoginSuccess }
         <section className="auth-card auth-card-admin">
           <div className="auth-brand">
             <div className="auth-brand-badge auth-brand-badge-admin">A</div>
-            <h2 className="auth-brand-title">Lumina Admin</h2>
+            <h2 className="auth-brand-title">Vidya Bridge Admin</h2>
           </div>
           <h1 className="auth-heading">Admin sign in</h1>
           <p className="auth-subheading">Administrators only. Sign in with your admin account.</p>

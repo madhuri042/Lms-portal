@@ -23,7 +23,7 @@ export const AITutorPage: React.FC = () => {
     {
       id: 'welcome',
       role: 'assistant',
-      content: "Hi! I'm your Lumina AI Tutor. Ask me anything about your courses, assignments, or concepts you're learning. You can use the suggestions below to get started, or type your own question.",
+      content: "Hi! I'm your Vidya Bridge AI Tutor. Ask me anything about your courses, assignments, or concepts you're learning. You can use the suggestions below to get started, or type your own question.",
     },
   ]);
   const [input, setInput] = useState('');
@@ -99,7 +99,7 @@ export const AITutorPage: React.FC = () => {
           <div>
             <h1 className="ai-tutor-page__title">AI Tutor</h1>
             <p className="ai-tutor-page__subtitle">
-              Get instant help, explanations, and study tips from Lumina AI. Ask about concepts, assignments, or request a quick quiz.
+              Get instant help, explanations, and study tips from Vidya Bridge AI. Ask about concepts, assignments, or request a quick quiz.
             </p>
           </div>
         </div>
