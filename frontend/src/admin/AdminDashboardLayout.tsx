@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { AdminSidebar } from './AdminSidebar';
-import { AdminHeader } from './AdminHeader';
+import { Header } from '../components/Header';
 import '../admin/admin.css';
 
 type UserType = {
@@ -18,16 +18,12 @@ interface AdminDashboardLayoutProps {
 }
 
 export const AdminDashboardLayout: React.FC<AdminDashboardLayoutProps> = ({ user, onLogout }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
   return (
-    <div className="min-h-screen bg-slate-50 flex">
-      <div className={`${sidebarOpen ? 'block' : 'hidden'} lg:block`}>
-        <AdminSidebar />
-      </div>
-      <div className="flex-1 flex flex-col min-w-0">
-        <AdminHeader user={user} onLogout={onLogout} onMenuClick={() => setSidebarOpen((o) => !o)} />
-        <main className="flex-1 p-4 lg:p-6 overflow-auto">
+    <div className="dashboard-shell">
+      <AdminSidebar />
+      <div className="main-container">
+        <Header user={user} onLogout={onLogout} />
+        <main className="main-content">
           <Outlet />
         </main>
       </div>

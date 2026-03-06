@@ -1,85 +1,93 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Users,
-  GraduationCap,
-  UserCog,
-  BookOpen,
-  FolderPlus,
-  Tags,
-  FileCheck,
-  ClipboardList,
-  FileEdit,
-  BarChart3,
-  Activity,
-  Bell,
-  Settings,
-  ChevronDown,
-  ChevronRight,
-} from 'lucide-react';
 
-const navSections = [
-  {
-    label: 'Dashboard',
-    to: '/dashboard/admin',
-    icon: LayoutDashboard,
-    end: true,
-  },
+const navSections: Array<{
+  label: string;
+  to?: string;
+  end?: boolean;
+  icon: string;
+  children?: Array<{ label: string; to: string; icon: string }>;
+}> = [
+  { label: 'Dashboard', to: '/dashboard/admin', end: true, icon: 'dashboard' },
   {
     label: 'User Management',
-    icon: Users,
+    icon: 'users',
     children: [
-      { label: 'All Users', to: '/dashboard/admin/users', icon: Users },
-      { label: 'Students', to: '/dashboard/admin/users?role=student', icon: GraduationCap },
-      { label: 'Instructors', to: '/dashboard/admin/users?role=instructor', icon: UserCog },
+      { label: 'All Users', to: '/dashboard/admin/users', icon: 'users' },
+      { label: 'Students', to: '/dashboard/admin/users?role=student', icon: 'graduation' },
+      { label: 'Instructors', to: '/dashboard/admin/users?role=instructor', icon: 'userCog' },
     ],
   },
   {
     label: 'Courses',
-    icon: BookOpen,
+    icon: 'book',
     children: [
-      { label: 'All Courses', to: '/dashboard/admin/courses', icon: BookOpen },
-      { label: 'Create Course', to: '/dashboard/admin/courses/create', icon: FolderPlus },
-      { label: 'Categories', to: '/dashboard/admin/categories', icon: Tags },
-      { label: 'Course Approvals', to: '/dashboard/admin/courses/approvals', icon: FileCheck },
+      { label: 'All Courses', to: '/dashboard/admin/courses', icon: 'book' },
+      { label: 'Create Course', to: '/dashboard/admin/courses/create', icon: 'folderPlus' },
+      { label: 'Categories', to: '/dashboard/admin/categories', icon: 'tags' },
+      { label: 'Course Approvals', to: '/dashboard/admin/courses/approvals', icon: 'fileCheck' },
     ],
   },
   {
     label: 'Students',
-    icon: GraduationCap,
+    icon: 'graduation',
     children: [
-      { label: 'Progress', to: '/dashboard/admin/students/progress', icon: Activity },
-      { label: 'Performance', to: '/dashboard/admin/students/performance', icon: BarChart3 },
+      { label: 'Progress', to: '/dashboard/admin/students/progress', icon: 'activity' },
+      { label: 'Performance', to: '/dashboard/admin/students/performance', icon: 'barChart' },
     ],
   },
   {
     label: 'Assignments',
-    icon: ClipboardList,
+    icon: 'clipboard',
     children: [
-      { label: 'Submissions', to: '/dashboard/admin/assignments/submissions', icon: ClipboardList },
-      { label: 'Reviews', to: '/dashboard/admin/assignments/reviews', icon: FileEdit },
+      { label: 'Submissions', to: '/dashboard/admin/assignments/submissions', icon: 'clipboard' },
     ],
   },
   {
     label: 'Reports',
-    icon: BarChart3,
+    icon: 'barChart',
     children: [
-      { label: 'Analytics', to: '/dashboard/admin/reports/analytics', icon: BarChart3 },
-      { label: 'Activity Logs', to: '/dashboard/admin/reports/activity', icon: Activity },
+      { label: 'Analytics', to: '/dashboard/admin/reports/analytics', icon: 'barChart' },
+      { label: 'Activity Logs', to: '/dashboard/admin/reports/activity', icon: 'activity' },
     ],
   },
-  {
-    label: 'Notifications',
-    to: '/dashboard/admin/notifications',
-    icon: Bell,
-  },
-  {
-    label: 'Settings',
-    to: '/dashboard/admin/settings',
-    icon: Settings,
-  },
+  { label: 'Settings', to: '/dashboard/admin/settings', icon: 'settings' },
 ];
+
+const IconSvg = ({ name }: { name: string }) => {
+  const size = 18;
+  const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  switch (name) {
+    case 'dashboard':
+      return <svg {...common}><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>;
+    case 'users':
+      return <svg {...common}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>;
+    case 'graduation':
+      return <svg {...common}><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" /></svg>;
+    case 'userCog':
+      return <svg {...common}><circle cx="12" cy="8" r="4" /><path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2" /><circle cx="18" cy="4" r="2" /><path d="M22 10h-2" /><path d="M16 10h-2" /></svg>;
+    case 'book':
+      return <svg {...common}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>;
+    case 'folderPlus':
+      return <svg {...common}><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /><line x1="12" y1="11" x2="12" y2="17" /><line x1="9" y1="14" x2="15" y2="14" /></svg>;
+    case 'tags':
+      return <svg {...common}><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" /><line x1="7" y1="7" x2="7.01" y2="7" /></svg>;
+    case 'fileCheck':
+      return <svg {...common}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><path d="M9 15l2 2 4-4" /></svg>;
+    case 'clipboard':
+      return <svg {...common}><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" /><rect x="8" y="2" width="8" height="4" rx="1" ry="1" /><path d="M9 14h6" /><path d="M9 18h6" /></svg>;
+    case 'fileEdit':
+      return <svg {...common}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>;
+    case 'barChart':
+      return <svg {...common}><line x1="12" y1="20" x2="12" y2="10" /><line x1="18" y1="20" x2="18" y2="4" /><line x1="6" y1="20" x2="6" y2="16" /></svg>;
+    case 'activity':
+      return <svg {...common}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>;
+    case 'settings':
+      return <svg {...common}><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>;
+    default:
+      return <svg {...common}><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>;
+  }
+};
 
 export const AdminSidebar: React.FC = () => {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
@@ -92,70 +100,58 @@ export const AdminSidebar: React.FC = () => {
   };
 
   return (
-    <aside className="w-64 min-h-screen bg-white border-r border-slate-200 flex flex-col shrink-0">
-      <div className="p-5 border-b border-slate-200 flex items-center gap-2">
-        <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center">
-          <BookOpen className="w-5 h-5 text-white" />
+    <aside className="sidebar">
+      <div className="sidebar-brand">
+        <div className="sidebar-logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+            <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5" />
+          </svg>
         </div>
-        <span className="font-semibold text-slate-800 text-lg">Lumina</span>
-        <span className="ml-1 px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">Admin</span>
+        <span className="fw-bold fs-5 text-dark">Lumina</span>
+        <span className="sidebar-admin-badge" title="Administrator">Admin</span>
       </div>
-      <nav className="flex-1 overflow-y-auto py-4 px-3">
+
+      <nav className="sidebar-nav">
         {navSections.map((section) => {
-          if ('children' in section && section.children) {
+          if (section.children) {
             const isOpen = openSections[section.label] ?? false;
-            const Icon = section.icon;
             return (
-              <div key={section.label} className="mb-1">
+              <div key={section.label}>
                 <button
                   type="button"
                   onClick={() => toggleSection(section.label)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+                  className="nav-item"
                 >
-                  <Icon className="w-5 h-5 shrink-0" />
-                  <span className="text-sm font-medium flex-1 text-left">{section.label}</span>
-                  {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                  <IconSvg name={section.icon} />
+                  <span>{section.label}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: 'auto' }}>
+                    {isOpen ? <polyline points="6 9 12 15 18 9" /> : <polyline points="9 18 15 12 9 6" />}
+                  </svg>
                 </button>
-                {isOpen && (
-                  <div className="ml-4 mt-1 space-y-0.5">
-                    {section.children.map((child) => {
-                      const ChildIcon = child.icon;
-                      return (
-                        <NavLink
-                          key={child.to}
-                          to={child.to}
-                          className={({ isActive }) =>
-                            `flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
-                              isActive
-                                ? 'bg-indigo-50 text-indigo-700 font-medium'
-                                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                            }`
-                          }
-                        >
-                          <ChildIcon className="w-4 h-4 shrink-0" />
-                          {child.label}
-                        </NavLink>
-                      );
-                    })}
-                  </div>
-                )}
+                {isOpen &&
+                  section.children.map((child) => (
+                    <NavLink
+                      key={child.to}
+                      to={child.to}
+                      className={({ isActive }) => `nav-item nav-item-sub ${isActive ? 'active' : ''}`}
+                    >
+                      <IconSvg name={child.icon} />
+                      <span>{child.label}</span>
+                    </NavLink>
+                  ))}
               </div>
             );
           }
-          const Icon = section.icon;
           return (
             <NavLink
               key={section.label}
               to={section.to!}
               end={section.end}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg mb-1 text-sm transition-colors ${
-                  isActive ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`
-              }
+              className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
             >
-              <Icon className="w-5 h-5 shrink-0" />
-              {section.label}
+              <IconSvg name={section.icon} />
+              <span>{section.label}</span>
             </NavLink>
           );
         })}

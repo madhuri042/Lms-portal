@@ -531,6 +531,14 @@ svg {
   gap: 0.5rem;
   flex: 1;
   min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox: hide scrollbar */
+  -ms-overflow-style: none; /* IE/Edge: hide scrollbar */
+}
+
+.sidebar-nav::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera: hide scrollbar */
 }
 
 .nav-item {
@@ -563,6 +571,20 @@ svg {
 
 .nav-item:hover svg {
   transform: translateX(2px);
+}
+
+/* Admin sidebar: section toggle button same as nav-item */
+.sidebar-nav button.nav-item {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+}
+
+.sidebar-nav .nav-item-sub {
+  padding-left: 2rem;
 }
 
 .main-container {
