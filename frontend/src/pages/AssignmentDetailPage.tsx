@@ -175,10 +175,13 @@ export const AssignmentDetailPage: React.FC = () => {
             <>
               {assignment.questions && assignment.questions.length > 0 ? (
                 <>
+                  <p className="text-muted mb-3">
+                    {assignment.questions.length} question{assignment.questions.length !== 1 ? 's' : ''} · {assignment.totalMarks} total marks
+                  </p>
                   {assignment.questions.map((q, idx) => (
                     <div key={q._id} className="mb-4 p-3 border rounded">
                       <p className="fw-semibold mb-2">
-                        {idx + 1}. {q.questionText} <span className="text-muted">({q.marks} mark{q.marks !== 1 ? 's' : ''})</span>
+                        Question {idx + 1} of {assignment.questions.length}: {q.questionText} <span className="text-muted">({q.marks} mark{q.marks !== 1 ? 's' : ''})</span>
                       </p>
                       <div className="ms-3">
                         {q.options?.map((opt, i) => (

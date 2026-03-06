@@ -11,6 +11,11 @@ interface SyllabusModule {
     lessons: string[];
 }
 
+interface CourseVideo {
+    title: string;
+    videoUrl: string;
+}
+
 interface EnrolledStudent {
     _id: string;
     firstName?: string;
@@ -28,6 +33,7 @@ interface CourseDetail {
     objectives?: string[];
     outcomes?: string[];
     syllabus?: SyllabusModule[];
+    videos?: CourseVideo[];
     enrolledStudents?: (string | EnrolledStudent)[];
 }
 
@@ -60,6 +66,19 @@ const IconChevronDown = ({ isOpen }: { isOpen: boolean }) => (
         <polyline points="6 9 12 15 18 9" />
     </svg>
 );
+
+/** Extract YouTube video ID from URL; returns embed URL or null */
+function getYouTubeEmbedUrl(url: string): string | null {
+    if (!url || typeof url !== 'string') return null;
+    const u = url.trim();
+    const watchMatch = u.match(/(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
+    if (watchMatch) return `https://www.youtube.com/embed/${watchMatch[1]}`;
+    const shortMatch = u.match(/(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (shortMatch) return `https://www.youtube.com/embed/${shortMatch[1]}`;
+    const embedMatch = u.match(/(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+    if (embedMatch) return u;
+    return null;
+}
 
 export const CourseDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -205,10 +224,12 @@ export const CourseDetailPage: React.FC = () => {
                         {!isInstructorView && (
                             <div className="hero-actions-modern">
                                 {isEnrolled ? (
-                                    <button className="btn-modern btn-enrolled-status" disabled>
-                                        <IconCheck />
-                                        Already Enrolled
-                                    </button>
+                                    <Link to={`/dashboard/courses/${id}/learn`} className="btn-modern btn-enroll-primary">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <polygon points="5 3 19 12 5 21 5 3" />
+                                        </svg>
+                                        Go to Lectures
+                                    </Link>
                                 ) : (
                                     <button className={`btn-modern btn-enroll-primary ${enrolling ? 'loading' : ''}`} onClick={handleEnroll} disabled={enrolling}>
                                         {enrolling ? 'Enrolling...' : 'Start Learning Now'}
@@ -257,6 +278,43 @@ export const CourseDetailPage: React.FC = () => {
                                     </ul>
                                 </section>
                             </div>
+
+                            {isEnrolled && course.videos && course.videos.length > 0 && (
+                                <section className="detail-card-modern course-videos-section">
+                                    <div className="section-header-modern">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <polygon points="23 7 16 12 23 17 23 7" />
+                                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                                        </svg>
+                                        <h2>Course Videos</h2>
+                                    </div>
+                                    <div className="course-videos-list">
+                                        {course.videos.map((video, idx) => {
+                                            const embedUrl = getYouTubeEmbedUrl(video.videoUrl);
+                                            return (
+                                                <div key={idx} className="course-video-item">
+                                                    <h4 className="course-video-title">{video.title || `Video ${idx + 1}`}</h4>
+                                                    {embedUrl ? (
+                                                        <div className="course-video-embed-wrap">
+                                                            <iframe
+                                                                src={embedUrl}
+                                                                title={video.title || `Course video ${idx + 1}`}
+                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                                allowFullScreen
+                                                                className="course-video-iframe"
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <p className="course-video-fallback">
+                                                            <a href={video.videoUrl} target="_blank" rel="noopener noreferrer">Watch: {video.title || video.videoUrl}</a>
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </section>
+                            )}
                         </>
                     )}
 

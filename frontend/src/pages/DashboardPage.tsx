@@ -37,6 +37,12 @@ type ProgressReport = {
   [key: string]: unknown;
 };
 
+type WeeklyActivityDay = {
+  dayLabel: string;
+  date: string;
+  count: number;
+};
+
 type StudentDashboardData = {
   totalEnrolledCourses: number;
   pendingAssignments: number;
@@ -46,6 +52,7 @@ type StudentDashboardData = {
   evaluatedAssignmentsCount: number;
   totalExamsRemaining: number;
   progressReports: ProgressReport[];
+  weeklyActivity?: WeeklyActivityDay[];
 };
 
 type DashboardPageProps = {
@@ -588,25 +595,41 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
             </Link>
           </div>
 
-          {/* Weekly Activity (placeholder bar chart) */}
+          {/* Weekly Activity — submissions per day (last 7 days) */}
           <div className="dashboard-charts-row">
             <div className="dashboard-card">
               <h3 className="dashboard-card-title">Weekly Activity</h3>
+              <p className="dashboard-activity-caption">Assignment submissions in the last 7 days</p>
               <div className="dashboard-activity-bars">
-                {['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'].map((day, i) => (
-                  <div key={day} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div
-                      className="dashboard-activity-bar"
-                      style={{ ['--h' as string]: `${[48, 32, 88, 24, 64, 120, 72][i]}px` }}
-                    />
-                  </div>
-                ))}
+                {((data as StudentDashboardData).weeklyActivity || []).length === 0 ? (
+                  <p className="dashboard-activity-empty">No activity data yet.</p>
+                ) : (
+                  ((data as StudentDashboardData).weeklyActivity || []).map((day) => {
+                    const maxCount = Math.max(
+                      ...((data as StudentDashboardData).weeklyActivity || []).map((d) => d.count),
+                      1
+                    );
+                    const heightPx = Math.round((day.count / maxCount) * 100) + 8;
+                    return (
+                      <div key={day.date} className="dashboard-activity-bar-cell">
+                        <div
+                          className="dashboard-activity-bar"
+                          style={{ ['--h' as string]: `${heightPx}px` }}
+                          title={`${day.dayLabel}: ${day.count} submission${day.count !== 1 ? 's' : ''}`}
+                        />
+                        <span className="dashboard-activity-count">{day.count}</span>
+                      </div>
+                    );
+                  })
+                )}
               </div>
-              <div className="dashboard-activity-labels">
-                {['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'].map((day) => (
-                  <span key={day}>{day}</span>
-                ))}
-              </div>
+              {((data as StudentDashboardData).weeklyActivity || []).length > 0 && (
+                <div className="dashboard-activity-labels">
+                  {((data as StudentDashboardData).weeklyActivity || []).map((day) => (
+                    <span key={day.date}>{day.dayLabel}</span>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Overall Progress — based on evaluated / total assignments */}
@@ -624,7 +647,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
                           360
                         )}deg`
                         : '0deg',
-                    ['--progress-color' as string]: '#059669',
+                    ['--progress-color' as string]: 'var(--success)',
                   }}
                 >
                   <div className="dashboard-progress-ring-inner">

@@ -15,6 +15,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ role }) => {
   const isStudent = role === 'student';
+  const isAdmin = role === 'admin';
 
   return (
     <aside className="sidebar">
@@ -23,6 +24,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ role }) => {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
         </div>
         <span className="fw-bold fs-5 text-dark">Lumina</span>
+        {isAdmin && <span className="sidebar-admin-badge" title="Administrator">Admin</span>}
       </div>
 
       <nav className="sidebar-nav">

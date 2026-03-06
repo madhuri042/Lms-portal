@@ -33,6 +33,23 @@ import { SystemReportsPage } from './pages/SystemReportsPage';
 import { ManageStudentsPage } from './pages/ManageStudentsPage';
 import { SubmissionsPage } from './pages/SubmissionsPage';
 import { CourseDetailPage } from './pages/CourseDetailPage';
+import { CourseLearnPage } from './pages/CourseLearnPage';
+import { AdminLoginPage } from './pages/AdminLoginPage';
+import { AdminDashboardLayout } from './admin/AdminDashboardLayout';
+import { AdminDashboardPage } from './admin/AdminDashboardPage';
+import { AdminUserManagementPage } from './admin/AdminUserManagementPage';
+import { AdminCoursesPage } from './admin/AdminCoursesPage';
+import { AdminSubmissionsPage } from './admin/AdminSubmissionsPage';
+import { AdminReportsPage } from './admin/AdminReportsPage';
+import { AdminCategoriesPage } from './admin/AdminCategoriesPage';
+import { AdminCourseApprovalsPage } from './admin/AdminCourseApprovalsPage';
+import { AdminCreateCoursePage } from './admin/AdminCreateCoursePage';
+import { AdminStudentsProgressPage } from './admin/AdminStudentsProgressPage';
+import { AdminStudentsPerformancePage } from './admin/AdminStudentsPerformancePage';
+import { AdminAssignmentsReviewsPage } from './admin/AdminAssignmentsReviewsPage';
+import { AdminActivityLogsPage } from './admin/AdminActivityLogsPage';
+import { AdminNotificationsPage } from './admin/AdminNotificationsPage';
+import { AdminSettingsPage } from './admin/AdminSettingsPage';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -86,8 +103,45 @@ const App: React.FC = () => {
             currentUser ? <Navigate to="/dashboard" replace /> : <SignupPage onSignupSuccess={handleAuthSuccess} />
           }
         />
+        <Route
+          path="/admin/login"
+          element={
+            currentUser
+              ? <Navigate to={currentUser.role === 'admin' ? '/dashboard/admin' : '/dashboard'} replace />
+              : <AdminLoginPage onLoginSuccess={handleAuthSuccess} />
+          }
+        />
 
-        {/* Protected Dashboard Routes */}
+        {/* Admin Dashboard (Lumina Admin Panel) */}
+        <Route
+          path="/dashboard/admin"
+          element={
+            currentUser?.role === 'admin' ? (
+              <AdminDashboardLayout user={currentUser} onLogout={handleLogout} />
+            ) : currentUser ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        >
+          <Route index element={<AdminDashboardPage user={currentUser!} />} />
+          <Route path="users" element={<AdminUserManagementPage />} />
+          <Route path="courses" element={<AdminCoursesPage />} />
+          <Route path="courses/create" element={<AdminCreateCoursePage />} />
+          <Route path="categories" element={<AdminCategoriesPage />} />
+          <Route path="courses/approvals" element={<AdminCourseApprovalsPage />} />
+          <Route path="students/progress" element={<AdminStudentsProgressPage />} />
+          <Route path="students/performance" element={<AdminStudentsPerformancePage />} />
+          <Route path="assignments/submissions" element={<AdminSubmissionsPage />} />
+          <Route path="assignments/reviews" element={<AdminAssignmentsReviewsPage />} />
+          <Route path="reports/analytics" element={<AdminReportsPage />} />
+          <Route path="reports/activity" element={<AdminActivityLogsPage />} />
+          <Route path="notifications" element={<AdminNotificationsPage />} />
+          <Route path="settings" element={<AdminSettingsPage />} />
+        </Route>
+
+        {/* Protected Dashboard Routes (instructor / student) */}
         <Route
           path="/dashboard"
           element={
@@ -98,7 +152,16 @@ const App: React.FC = () => {
             )
           }
         >
-          <Route index element={<DashboardPage user={currentUser!} onLogout={handleLogout} />} />
+          <Route
+            index
+            element={
+              currentUser?.role === 'admin' ? (
+                <Navigate to="/dashboard/admin" replace />
+              ) : (
+                <DashboardPage user={currentUser!} onLogout={handleLogout} />
+              )
+            }
+          />
           <Route path="courses" element={<MyCoursesPage />} />
           <Route path="recommended" element={<RecommendedPage />} />
           <Route path="assignments" element={<AssignmentsPage />} />
@@ -108,6 +171,7 @@ const App: React.FC = () => {
           <Route path="students" element={<ManageStudentsPage />} />
           <Route path="submissions" element={<SubmissionsPage />} />
           <Route path="courses/:id" element={<CourseDetailPage />} />
+          <Route path="courses/:id/learn" element={<CourseLearnPage />} />
           <Route path="ai-tutor" element={<AITutorPage />} />
           <Route path="reports" element={<SystemReportsPage />} />
         </Route>

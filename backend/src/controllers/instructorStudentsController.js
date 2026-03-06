@@ -103,11 +103,11 @@ exports.getStudentDirectory = async (req, res) => {
  * POST /api/instructor/students
  * Create a new student (instructor only). Body: firstName, lastName, email, phone.
  * Optional: courseId to enroll the student in one of instructor's courses.
- * Password is auto-generated if not provided.
+ * Password is set to a default; instructors cannot set or change it here.
  */
 exports.createStudent = async (req, res) => {
     try {
-        const { firstName, lastName, email, phone, password, courseId } = req.body;
+        const { firstName, lastName, email, phone, courseId } = req.body;
 
         if (!firstName || !lastName || !email || !phone) {
             return res.status(400).json({
@@ -124,14 +124,6 @@ exports.createStudent = async (req, res) => {
             });
         }
 
-        const defaultPassword = password && String(password).length >= 6 ? password : 'Student@123';
-        if (password && String(password).length > 0 && String(password).length < 6) {
-            return res.status(400).json({
-                success: false,
-                message: 'Password must be at least 6 characters.',
-            });
-        }
-
         const userExists = await User.findOne({ $or: [{ email: email.trim() }, { phone: phoneStr }] });
         if (userExists) {
             const field = userExists.email === email.trim() ? 'Email' : 'Phone number';
@@ -143,7 +135,7 @@ exports.createStudent = async (req, res) => {
             lastName: lastName.trim(),
             email: email.trim().toLowerCase(),
             phone: phoneStr,
-            password: defaultPassword,
+            password: 'Student@123',
             role: 'student',
         });
 
@@ -173,12 +165,12 @@ exports.createStudent = async (req, res) => {
 /**
  * PUT /api/instructor/students/:id
  * Update a student's profile. Instructor can only update students enrolled in their courses.
- * Body: firstName, lastName, email, phone. Optional: password (min 6 chars).
+ * Body: firstName, lastName, email, phone. Password cannot be changed here.
  */
 exports.updateStudent = async (req, res) => {
     try {
         const { id } = req.params;
-        const { firstName, lastName, email, phone, password } = req.body;
+        const { firstName, lastName, email, phone } = req.body;
         const instructorId = req.user.id;
 
         const courses = await Course.find({ instructor: instructorId }).select('enrolledStudents').lean();
@@ -211,9 +203,6 @@ exports.updateStudent = async (req, res) => {
             const existing = await User.findOne({ phone: phoneStr, _id: { $ne: id } });
             if (existing) return res.status(400).json({ success: false, message: 'Phone number already in use.' });
             updates.phone = phoneStr;
-        }
-        if (password != null && String(password).length >= 6) {
-            updates.password = password;
         }
 
         if (Object.keys(updates).length === 0) {

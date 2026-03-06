@@ -37,8 +37,10 @@ exports.getCourse = async (req, res) => {
 // @access  Private (Admin, Instructor)
 exports.createCourse = async (req, res) => {
     try {
-        // Add user to req.body as instructor
-        req.body.instructor = req.user.id;
+        // Admin can set instructor; otherwise use current user
+        if (req.user.role !== 'admin' || !req.body.instructor) {
+            req.body.instructor = req.user.id;
+        }
 
         const course = await Course.create(req.body);
 

@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 const Assignment = require('../models/Assignment');
 const AssignmentSubmission = require('../models/AssignmentSubmission');
+const Course = require('../models/Course');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
+
+const MIN_MCQ_QUESTIONS = 20;
 
 // @desc    Create new assignment
 // @route   POST /api/courses/:courseId/assignments
@@ -11,6 +14,16 @@ exports.createAssignment = async (req, res) => {
     try {
         req.body.course = req.params.courseId;
         req.body.instructor = req.user.id;
+
+        if (req.body.type === 'mcq') {
+            const questions = req.body.questions;
+            if (!Array.isArray(questions) || questions.length < MIN_MCQ_QUESTIONS) {
+                return res.status(400).json({
+                    success: false,
+                    message: `MCQ assignments must have at least ${MIN_MCQ_QUESTIONS} questions. You provided ${Array.isArray(questions) ? questions.length : 0}.`,
+                });
+            }
+        }
 
         const assignment = await Assignment.create(req.body);
 
@@ -63,9 +76,24 @@ exports.getAssignments = async (req, res) => {
         if (courseId) {
             assignments = await Assignment.find({ course: courseId });
         } else {
-            assignments = await Assignment.find()
-                .populate('course', 'title')
-                .populate('instructor', 'firstName lastName');
+            let query = {};
+            // Students only see assignments from courses they are enrolled in
+            if (req.user && req.user.role === 'student') {
+                const enrolledCourses = await Course.find({ enrolledStudents: req.user.id }).select('_id').lean();
+                const courseIds = enrolledCourses.map((c) => c._id);
+                if (courseIds.length === 0) {
+                    assignments = [];
+                } else {
+                    query = { course: { $in: courseIds } };
+                    assignments = await Assignment.find(query)
+                        .populate('course', 'title')
+                        .populate('instructor', 'firstName lastName');
+                }
+            } else {
+                assignments = await Assignment.find()
+                    .populate('course', 'title')
+                    .populate('instructor', 'firstName lastName');
+            }
         }
 
         // For students: attach current user's submission status and grade to each assignment
@@ -87,6 +115,15 @@ exports.getAssignments = async (req, res) => {
                 const d = a.toObject ? a.toObject() : { ...a };
                 d.mySubmission = byAssignment[d._id.toString()] || null;
                 return d;
+            });
+            // Pending (no submission) first, then by due date ascending
+            assignments.sort((a, b) => {
+                const aPending = !a.mySubmission ? 0 : 1;
+                const bPending = !b.mySubmission ? 0 : 1;
+                if (aPending !== bPending) return aPending - bPending;
+                const aDue = new Date(a.dueDate || 0).getTime();
+                const bDue = new Date(b.dueDate || 0).getTime();
+                return aDue - bDue;
             });
         }
 

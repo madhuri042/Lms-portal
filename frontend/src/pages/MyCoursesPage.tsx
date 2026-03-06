@@ -174,7 +174,7 @@ export const MyCoursesPage: React.FC = () => {
                   return (
                     <Link
                       key={course._id}
-                      to={`/dashboard/courses/${course._id}`}
+                      to={`/dashboard/courses/${course._id}/learn`}
                       className="catalog-page__card"
                     >
                       <div className="catalog-page__card-cover">
@@ -252,7 +252,7 @@ export const MyCoursesPage: React.FC = () => {
           {courses.map((course) => (
             <Link
               key={course._id}
-              to={`/dashboard/courses/${course._id}`}
+              to={`/dashboard/courses/${course._id}/learn`}
               className="recommended-page__card"
             >
               <div className="recommended-page__card-cover">

@@ -247,6 +247,20 @@ svg {
   transform: translateY(0);
 }
 
+/* Admin login */
+.auth-card-admin .auth-brand-badge-admin {
+  background: linear-gradient(135deg, #0f172a, #334155);
+  color: #f8fafc;
+}
+
+.auth-submit-admin {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+}
+
+.auth-submit-admin:hover {
+  filter: brightness(1.1);
+}
+
 /* Bootstrap Modal Overrides */
 .modal-content {
   border-radius: var(--radius-lg);
@@ -483,6 +497,18 @@ svg {
   gap: 0.75rem;
   margin-bottom: 3rem;
   padding-left: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sidebar-admin-badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #0f172a;
+  background: #e2e8f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  margin-left: auto;
 }
 
 .sidebar-logo {
@@ -1621,42 +1647,70 @@ svg {
   margin: 0 0 24px 0;
 }
 
+.dashboard-activity-caption {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  margin: -0.5rem 0 12px 0;
+}
+
 .dashboard-activity-bars {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   height: 160px;
-  padding-top: 12px;
+  padding-top: 8px;
   flex: 1;
   min-height: 140px;
 }
 
-.dashboard-activity-bar {
+.dashboard-activity-bar-cell {
   flex: 1;
   min-width: 0;
-  max-width: 48px;
+  max-width: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.dashboard-activity-bar {
+  width: 100%;
+  max-width: 44px;
   height: var(--h, 32px);
   min-height: 8px;
-  background: linear-gradient(180deg, #2563eb 0%, #3b82f6 100%);
+  background: linear-gradient(180deg, var(--brand-primary) 0%, var(--brand-hover) 100%);
   border-radius: 8px 8px 0 0;
-  margin: 0 auto;
+  transition: height 0.3s ease;
+}
+
+.dashboard-activity-count {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.dashboard-activity-empty {
+  font-size: 0.9375rem;
+  color: var(--text-tertiary);
+  margin: 2rem 0;
+  text-align: center;
 }
 
 .dashboard-activity-labels {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
-  margin-top: 14px;
+  gap: 10px;
+  margin-top: 10px;
   padding: 0 4px;
 }
 
 .dashboard-activity-labels span {
   flex: 1;
   font-size: 0.75rem;
-  color: var(--text-tertiary, #667085);
+  color: var(--text-tertiary);
   text-align: center;
-  max-width: 48px;
+  max-width: 44px;
 }
 
 .dashboard-progress-wrap {

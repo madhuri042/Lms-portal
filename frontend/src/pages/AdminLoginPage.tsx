@@ -13,11 +13,11 @@ type LoginFormErrors = {
   submit?: string;
 };
 
-type LoginPageProps = {
+type AdminLoginPageProps = {
   onLoginSuccess?: (user: { id: string; firstName: string; lastName: string; email: string; role: string }) => void;
 };
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
+export const AdminLoginPage: React.FC<AdminLoginPageProps> = ({ onLoginSuccess }) => {
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const [form, setForm] = useState<LoginFormState>({ email: '', password: '' });
   const [errors, setErrors] = useState<LoginFormErrors>({});
@@ -25,19 +25,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
   const validate = (): boolean => {
     const newErrors: LoginFormErrors = {};
-
     if (!form.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       newErrors.email = 'Enter a valid email address';
     }
-
     if (!form.password) {
       newErrors.password = 'Password is required';
     } else if (form.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -53,25 +50,24 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
     if (!validate()) return;
 
     setIsSubmitting(true);
+    setErrors((prev) => ({ ...prev, submit: undefined }));
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: form.email.trim(),
           password: form.password,
         }),
       });
 
-      let data: any = null;
+      let data: { success?: boolean; token?: string; user?: { id: string; firstName: string; lastName: string; email: string; role: string }; message?: string } = null as any;
       const contentType = response.headers.get('content-type') || '';
       if (contentType.includes('application/json')) {
         try {
           data = await response.json();
         } catch {
-          // ignore JSON parse errors, we'll fall back to generic messaging
+          /* ignore */
         }
       }
 
@@ -84,20 +80,27 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         throw new Error(message);
       }
 
-      // Store token & basic user info
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      if (data.user?.role !== 'admin') {
+        setErrors((prev) => ({
+          ...prev,
+          submit: 'This account is not an administrator. Use the regular sign in for students and instructors.',
+        }));
+        setIsSubmitting(false);
+        return;
+      }
 
+      localStorage.setItem('token', data.token!);
+      localStorage.setItem('user', JSON.stringify(data.user));
       setForm({ email: '', password: '' });
       setErrors({});
 
       if (onLoginSuccess) {
-        onLoginSuccess(data.user);
+        onLoginSuccess(data.user!);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setErrors((prev) => ({
         ...prev,
-        submit: err.message || 'Something went wrong. Please try again.',
+        submit: err instanceof Error ? err.message : 'Something went wrong. Please try again.',
       }));
     } finally {
       setIsSubmitting(false);
@@ -107,32 +110,32 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   return (
     <div className="auth-shell">
       <div className="auth-container">
-        <section className="auth-card">
+        <section className="auth-card auth-card-admin">
           <div className="auth-brand">
-            <div className="auth-brand-badge">L</div>
-            <h2 className="auth-brand-title">Lumina</h2>
+            <div className="auth-brand-badge auth-brand-badge-admin">A</div>
+            <h2 className="auth-brand-title">Lumina Admin</h2>
           </div>
-          <h1 className="auth-heading">Sign in</h1>
-          <p className="auth-subheading">Welcome back! Please enter your details.</p>
+          <h1 className="auth-heading">Admin sign in</h1>
+          <p className="auth-subheading">Administrators only. Sign in with your admin account.</p>
           <form onSubmit={handleSubmit} noValidate className="auth-form">
             <div className="auth-field">
-              <label htmlFor="email" className="auth-label">Email</label>
+              <label htmlFor="admin-email" className="auth-label">Email</label>
               <input
-                id="email"
+                id="admin-email"
                 name="email"
                 type="email"
                 value={form.email}
                 onChange={handleChange}
                 className={`auth-input ${errors.email ? 'error' : ''}`}
-                placeholder="Enter your email"
+                placeholder="Admin email"
                 autoComplete="email"
               />
               {errors.email && <p className="auth-error-text">{errors.email}</p>}
             </div>
             <div className="auth-field">
-              <label htmlFor="password" className="auth-label">Password</label>
+              <label htmlFor="admin-password" className="auth-label">Password</label>
               <input
-                id="password"
+                id="admin-password"
                 name="password"
                 type="password"
                 value={form.password}
@@ -148,17 +151,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
               <p className="auth-error-text" style={{ textAlign: 'center' }}>{errors.submit}</p>
             )}
 
-            <button type="submit" disabled={isSubmitting} className="auth-submit">
-              {isSubmitting ? 'Signing in...' : 'Sign in'}
+            <button type="submit" disabled={isSubmitting} className="auth-submit auth-submit-admin">
+              {isSubmitting ? 'Signing in...' : 'Admin sign in'}
             </button>
 
             <div className="auth-footer">
-              Don&apos;t have an account?
-              <Link to="/signup" className="auth-footer-btn">Sign up</Link>
-            </div>
-            <div className="auth-footer" style={{ marginTop: '0.5rem' }}>
-              Admin?
-              <Link to="/admin/login" className="auth-footer-btn">Admin sign in</Link>
+              Not an admin?
+              <Link to="/login" className="auth-footer-btn">Regular sign in</Link>
             </div>
           </form>
         </section>
@@ -166,5 +165,4 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
       {isSubmitting && <Loader message="Authenticating..." />}
     </div>
   );
-};
-
+}

@@ -51,6 +51,7 @@ app.use('/api/exams', require('./src/routes/examRoutes'));
 // app.use('/api/progress', require('./src/routes/progressRoutes')); // Currently mounted via courseRoutes
 app.use('/api/chat', require('./src/routes/chatbotRoutes'));
 app.use('/api/dashboard', require('./src/routes/dashboardRoutes'));
+app.use('/api/admin', require('./src/routes/adminRoutes'));
 app.use('/api/notifications', require('./src/routes/notificationRoutes'));
 app.use('/api/recommended-courses', require('./src/routes/recommendedRoutes'));
 app.use('/api/instructor', require('./src/routes/instructorRoutes'));

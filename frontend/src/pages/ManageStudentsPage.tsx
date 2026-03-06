@@ -26,7 +26,6 @@ const initialForm = {
   lastName: '',
   email: '',
   phone: '',
-  password: '',
   courseId: '',
 };
 
@@ -95,7 +94,6 @@ export const ManageStudentsPage: React.FC = () => {
       lastName: s.lastName || '',
       email: s.email || '',
       phone: s.phone || '',
-      password: '',
       courseId: '',
     });
     setSubmitError(null);
@@ -166,10 +164,6 @@ export const ManageStudentsPage: React.FC = () => {
       setSubmitError('Phone number must be exactly 10 digits.');
       return;
     }
-    if (editForm.password.length > 0 && editForm.password.length < 6) {
-      setSubmitError('Password must be at least 6 characters if provided.');
-      return;
-    }
     setSubmitting(true);
     try {
       const body: Record<string, string> = {
@@ -178,7 +172,6 @@ export const ManageStudentsPage: React.FC = () => {
         email: editForm.email.trim().toLowerCase(),
         phone: phoneDigits,
       };
-      if (editForm.password) body.password = editForm.password;
       const res = await fetch(`${API_BASE_URL}/api/instructor/students/${editingStudent._id}`, {
         method: 'PUT',
         headers: {
@@ -488,19 +481,6 @@ export const ManageStudentsPage: React.FC = () => {
                   required
                   autoComplete="tel"
                   inputMode="numeric"
-                />
-              </div>
-              <div className="manage-students-form-row">
-                <label className="manage-students-label" htmlFor="edit-password">New password (optional)</label>
-                <input
-                  id="edit-password"
-                  type="password"
-                  className="manage-students-input"
-                  value={editForm.password}
-                  onChange={(e) => setEditForm((f) => ({ ...f, password: e.target.value }))}
-                  placeholder="Leave blank to keep current"
-                  minLength={6}
-                  autoComplete="new-password"
                 />
               </div>
               <div className="manage-students-modal-actions">

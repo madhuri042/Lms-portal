@@ -22,6 +22,11 @@ const courseSchema = new mongoose.Schema(
             default: '',
             trim: true,
         },
+        status: {
+            type: String,
+            enum: ['pending', 'approved'],
+            default: 'approved',
+        },
         instructor: {
             type: mongoose.Schema.ObjectId,
             ref: 'User',

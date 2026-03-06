@@ -1,6 +1,8 @@
 const OnlineExam = require('../models/OnlineExam');
 const ExamSubmission = require('../models/ExamSubmission');
 
+const MIN_MCQ_EXAM_QUESTIONS = 20;
+
 // @desc    Create an online exam
 // @route   POST /api/courses/:courseId/exams
 // @access  Private (Admin, Instructor)
@@ -8,6 +10,14 @@ exports.createExam = async (req, res) => {
     try {
         req.body.course = req.params.courseId;
         req.body.instructor = req.user.id;
+
+        const questions = req.body.questions;
+        if (!Array.isArray(questions) || questions.length < MIN_MCQ_EXAM_QUESTIONS) {
+            return res.status(400).json({
+                success: false,
+                message: `MCQ/online exams must have at least ${MIN_MCQ_EXAM_QUESTIONS} questions. You provided ${Array.isArray(questions) ? questions.length : 0}.`,
+            });
+        }
 
         const exam = await OnlineExam.create(req.body);
 
