@@ -1,0 +1,45 @@
+[dotenv@17.3.1] injecting env (4) from .env -- tip: ΓÜÖ∩╕Å  load multiple .env files with { path: ['.env.local', '.env'] }
+Starting test for gemma-3 direct to OpenRouter...
+{"index":0,"delta":{"content":"Why","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" don","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"'","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"t","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" skeletons","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" ever","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" go","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" on","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" dates","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"?","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"\n\n","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"...","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"Because","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" they","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" have","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" no","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" body","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" to","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" love","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"!","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" ≡ƒÿé","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"\n\n","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"Hope","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" that","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" gave","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" you","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" a","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" little","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" chuckle","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"!","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" ≡ƒÿè","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" ","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"\n\n","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"Would","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" you","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" like","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" to","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" hear","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" another","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":" one","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"?","role":"assistant"},"finish_reason":null,"native_finish_reason":null}
+{"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":"stop","native_finish_reason":"STOP"}
+{"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":"stop","native_finish_reason":"STOP"}

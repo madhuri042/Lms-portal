@@ -1,0 +1,4 @@
+[dotenv@17.3.1] injecting env (4) from .env -- tip: ΓÜÖ∩╕Å  override existing env vars with { override: true }
+[BACKEND] OPENROUTER_API_KEY is set ΓÇö AI chatbot (OpenRouter Nemotron) is configured.
+MongoDB Connected: 127.0.0.1
+Server running on port 5000

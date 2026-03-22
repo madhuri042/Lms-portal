@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Loader } from '../components/Loader';
 import { useToast } from '../context/ToastContext';
+import { getYouTubeEmbedUrl } from '../utils/video';
 import './CourseDetailPage.css';
-
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 interface SyllabusModule {
@@ -66,19 +66,6 @@ const IconChevronDown = ({ isOpen }: { isOpen: boolean }) => (
         <polyline points="6 9 12 15 18 9" />
     </svg>
 );
-
-/** Extract YouTube video ID from URL; returns embed URL or null */
-function getYouTubeEmbedUrl(url: string): string | null {
-    if (!url || typeof url !== 'string') return null;
-    const u = url.trim();
-    const watchMatch = u.match(/(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
-    if (watchMatch) return `https://www.youtube.com/embed/${watchMatch[1]}`;
-    const shortMatch = u.match(/(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-    if (shortMatch) return `https://www.youtube.com/embed/${shortMatch[1]}`;
-    const embedMatch = u.match(/(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-    if (embedMatch) return u;
-    return null;
-}
 
 export const CourseDetailPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();

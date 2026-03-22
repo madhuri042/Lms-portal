@@ -1,0 +1,4 @@
+[dotenv@17.3.1] injecting env (4) from .env -- tip: ΓÜÖ∩╕Å  write to custom object with { processEnv: myObject }
+Starting test against LOCALHOST backend (Direct Stream)...
+Status: 400
+{"success":false,"message":"AI service error: Provider returned error","detail":{"error":{"message":"Provider returned error","code":400,"metadata":{"raw":"{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Developer instruction is not enabled for models/gemma-3-27b-it\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n","provider_name":"Google AI Studio","is_byok":false}},"user_id":"user_30J5BGbtOnjDIXaJR0yLc8LaTqR"}}

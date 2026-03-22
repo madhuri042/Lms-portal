@@ -1,0 +1,11 @@
+
+> frontend@0.0.0 build
+> tsc && vite build
+
+src/admin/AdminAssignmentsReviewsPage.tsx(3,15): error TS6133: 'Award' is declared but its value is never read.
+src/admin/AdminDashboardPage.tsx(24,3): error TS6133: 'Legend' is declared but its value is never read.
+src/admin/AdminDashboardPage.tsx(174,63): error TS18048: 'percent' is possibly 'undefined'.
+src/admin/AdminReportsPage.tsx(26,7): error TS6133: 'COLORS' is declared but its value is never read.
+src/admin/AdminReportsPage.tsx(114,61): error TS18048: 'percent' is possibly 'undefined'.
+src/pages/AssignmentDetailPage.tsx(184,48): error TS18048: 'assignment.questions' is possibly 'undefined'.
+src/pages/SignupPage.tsx(40,55): error TS6133: 'onSignupSuccess' is declared but its value is never read.

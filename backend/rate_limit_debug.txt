@@ -1,0 +1,342 @@
+[dotenv@17.3.1] injecting env (4) from .env -- tip: ≡ƒ¢á∩╕Å  run anywhere with `dotenvx run -- yourcommand`
+Starting test against LOCALHOST backend (Direct Stream)...
+Status: 200
+CHUNK START >>>
+: OPENROUTER PROCESSING
+
+: OPENROUTER PROCESSING
+
+: OPENROUTER PROCESSING
+
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"Hello","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"!","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" ≡ƒæï","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" Glad","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" to","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" see","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" you","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"'","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"re","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" checking","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" in","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" ΓÇô","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" I","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"'","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"m","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" here","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" to","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" help","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" you","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" understand","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" the","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" backend","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" stream","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" material","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":".","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" Let","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" me","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" know","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" what","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"'","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"s","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" on","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" your","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" mind","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"!","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" ","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"\n\n\n\n","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"**(","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"Essentially","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" acknowledging","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" the","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" \"","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"test","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"\"","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" and","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" offering","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" support","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" without","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" engaging","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" in","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" anything","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" that","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" could","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" be","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" construed","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" as","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" helping","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" *","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"with","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"*","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" a","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":" test","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":".)","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"**","role":"assistant"},"finish_reason":null,"native_finish_reason":null}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":"stop","native_finish_reason":"STOP"}]}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: {"id":"gen-1773482361-9azJvFSqDpnEZIiLU9HV","object":"chat.completion.chunk","created":1773482361,"model":"google/gemma-3-27b-it:free","provider":"Google AI Studio","choices":[{"index":0,"delta":{"content":"","role":"assistant"},"finish_reason":"stop","native_finish_reason":"STOP"}],"usage":{"prompt_tokens":63,"completion_tokens":0,"total_tokens":63,"cost":0,"is_byok":false,"prompt_tokens_details":{"cached_tokens":0,"cache_write_tokens":0,"audio_tokens":0,"video_tokens":0},"cost_details":{"upstream_inference_cost":0,"upstream_inference_prompt_cost":0,"upstream_inference_completions_cost":0},"completion_tokens_details":{"reasoning_tokens":0,"image_tokens":0,"audio_tokens":0}}}
+
+
+<<< CHUNK END
+CHUNK START >>>
+data: [DONE]
+
+
+<<< CHUNK END
+Stream completely finished.

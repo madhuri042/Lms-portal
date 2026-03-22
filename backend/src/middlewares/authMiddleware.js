@@ -12,8 +12,8 @@ exports.protect = async (req, res, next) => {
         try {
             // Get token from header
             token = req.headers.authorization.split(' ')[1];
-
-            // Verify token
+            console.log(`[AUTH DEBUG] Verifying token: ${token.substring(0, 10)}...`);
+            console.log(`[AUTH DEBUG] Secret Prefix: ${process.env.JWT_SECRET ? process.env.JWT_SECRET.substring(0, 4) : 'MISSING'}`);
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
             // Get user from the token

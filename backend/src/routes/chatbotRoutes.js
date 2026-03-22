@@ -5,6 +5,8 @@ const { protect } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 router.post('/', protect, chatWithAI);
+// router.post('/', chatWithAI); // Debug: No auth
+
 router.get('/version', (req, res) => res.json({ success: true, version: '2.0.0-FETCH' }));
 router.get('/test', (req, res) => res.json({ success: true, message: 'Chatbot endpoint is reachable' }));
 
