@@ -1,0 +1,10 @@
+[dotenv@17.3.1] injecting env (4) from .env -- tip: ≡ƒ¢á∩╕Å  run anywhere with `dotenvx run -- yourcommand`
+Testing connection to: mongodb+srv://Madhuri:Madhuri042@lms.t4lrtrw.mongodb.net/lms?appName=lms
+Connection error output:
+Error: querySrv ECONNREFUSED _mongodb._tcp.lms.t4lrtrw.mongodb.net
+    at QueryReqWrap.onresolve [as oncomplete] (node:internal/dns/promises:293:17) {
+  errno: undefined,
+  code: 'ECONNREFUSED',
+  syscall: 'querySrv',
+  hostname: '_mongodb._tcp.lms.t4lrtrw.mongodb.net'
+}

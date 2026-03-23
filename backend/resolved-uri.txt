@@ -1,0 +1,1 @@
+mongodb://Madhuri:Madhuri042@ac-q4ijcnn-shard-00-02.t4lrtrw.mongodb.net:27017,ac-q4ijcnn-shard-00-01.t4lrtrw.mongodb.net:27017,ac-q4ijcnn-shard-00-00.t4lrtrw.mongodb.net:27017/lms?authSource=admin&replicaSet=atlas-3jfamd-shard-0&appName=lms&ssl=true

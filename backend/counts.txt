@@ -1,0 +1,14 @@
+[dotenv@17.3.1] injecting env (4) from .env -- tip: ≡ƒöÉ prevent building .env in docker: https://dotenvx.com/prebuild
+Connected to MongoDB
+Collections in database:
+- assignmentsubmissions: 0 documents
+- onlineexams: 0 documents
+- notifications: 0 documents
+- examsubmissions: 0 documents
+- courserecommendations: 30 documents
+- assignments: 25 documents
+- courses: 51 documents
+- users: 2 documents
+  Sample User: gnaneswardamarasingu@gmail.com (Role: student)
+- academicexams: 0 documents
+- progresses: 0 documents

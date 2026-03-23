@@ -6,7 +6,7 @@ const connectDB = require('./src/config/db');
 const path = require('path');
 
 // Load env from backend folder so it works when started from project root or backend/
-dotenv.config({ path: path.join(__dirname, '.env') });
+dotenv.config({ path: path.join(__dirname, '.env'), override: true });
 
 // Ensure uploads directory exists (multer and static both use backend/uploads)
 const uploadsPath = path.join(__dirname, 'uploads');
