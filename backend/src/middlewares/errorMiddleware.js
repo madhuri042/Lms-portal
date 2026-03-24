@@ -1,9 +1,25 @@
+const multer = require('multer');
+
 const errorHandler = (err, req, res, next) => {
     let error = { ...err };
     error.message = err.message;
 
     // Log to console for dev
     console.log(err);
+
+    if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+            return res.status(400).json({
+                success: false,
+                message: 'Syllabus PDF must be 15 MB or smaller.',
+            });
+        }
+        return res.status(400).json({ success: false, message: err.message });
+    }
+
+    if (err.message === 'Only PDF files are allowed for the syllabus.') {
+        return res.status(400).json({ success: false, message: err.message });
+    }
 
     // Mongoose bad ObjectId
     if (err.name === 'CastError') {

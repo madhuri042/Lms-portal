@@ -31,8 +31,26 @@ const academicExamSchema = new mongoose.Schema(
             enum: ['upcoming', 'submitted', 'evaluated'],
             default: 'upcoming',
         },
+        /** Stored filename under uploads/exam-syllabi/ (not exposed to client) */
+        syllabusFileName: {
+            type: String,
+            default: null,
+        },
+        syllabusOriginalName: {
+            type: String,
+            default: null,
+        },
     },
     { timestamps: true }
 );
+
+academicExamSchema.set('toJSON', {
+    transform(_doc, ret) {
+        ret.hasSyllabus = Boolean(ret.syllabusFileName);
+        delete ret.syllabusFileName;
+        delete ret.syllabusOriginalName;
+        return ret;
+    },
+});
 
 module.exports = mongoose.model('AcademicExam', academicExamSchema);

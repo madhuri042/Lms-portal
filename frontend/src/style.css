@@ -797,6 +797,14 @@ svg {
   min-height: 0;
 }
 
+/* AI Tutor: full width; scroll happens inside the tutor (message list), not the whole main pane */
+.main-content:has(> .gpt-layout) {
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;
+  min-height: 0;
+}
+
 @media (max-width: 64rem) {
   .sidebar {
     width: min(5rem, 20vw);

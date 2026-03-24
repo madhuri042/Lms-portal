@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastContext';
 
 type AcademicExam = {
@@ -8,11 +9,13 @@ type AcademicExam = {
   examCode: string;
   examDate?: string | null;
   createdAt?: string;
+  hasSyllabus?: boolean;
 };
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export const ExamsPage: React.FC = () => {
+  const navigate = useNavigate();
   const [exams, setExams] = useState<AcademicExam[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,11 +23,13 @@ export const ExamsPage: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const { showToast } = useToast();
+  const syllabusInputRef = useRef<HTMLInputElement>(null);
 
   const [universityName, setUniversityName] = useState('');
   const [examName, setExamName] = useState('');
   const [examCode, setExamCode] = useState('');
   const [examDate, setExamDate] = useState('');
+  const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
   const fetchExams = async () => {
@@ -70,6 +75,8 @@ export const ExamsPage: React.FC = () => {
     setExamName('');
     setExamCode('');
     setExamDate('');
+    setSyllabusFile(null);
+    if (syllabusInputRef.current) syllabusInputRef.current.value = '';
     setFormError(null);
     setShowModal(true);
   };
@@ -95,23 +102,30 @@ export const ExamsPage: React.FC = () => {
       setFormError('Please fill all fields.');
       return;
     }
+    if (!syllabusFile) {
+      setFormError('Please upload your syllabus as a PDF.');
+      return;
+    }
+    if (syllabusFile.type !== 'application/pdf' && !syllabusFile.name.toLowerCase().endsWith('.pdf')) {
+      setFormError('Syllabus must be a PDF file.');
+      return;
+    }
     const token = localStorage.getItem('token');
     if (!token) return;
     setSubmitting(true);
     try {
-      const payload: Record<string, unknown> = {
-        universityName: u,
-        examName: n,
-        examCode: c,
-      };
-      if (examDate.trim()) payload.examDate = new Date(examDate).toISOString();
+      const formData = new FormData();
+      formData.append('universityName', u);
+      formData.append('examName', n);
+      formData.append('examCode', c);
+      if (examDate.trim()) formData.append('examDate', new Date(examDate).toISOString());
+      formData.append('syllabus', syllabusFile);
       const res = await fetch(`${API_BASE_URL}/api/academic-exams`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(payload),
+        body: formData,
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -151,6 +165,22 @@ export const ExamsPage: React.FC = () => {
     }
   };
 
+  const examIdString = (id: string | { toString?: () => string }) =>
+    typeof id === 'string' ? id : String(id);
+
+  const handlePrepare = (exam: AcademicExam) => {
+    if (!exam.hasSyllabus) {
+      showToast('Add a new exam with a syllabus PDF to use Prepare.');
+      return;
+    }
+    const id = examIdString(exam._id as string | { toString?: () => string });
+    const q = new URLSearchParams();
+    q.set('prepExam', id);
+    q.set('examName', exam.examName);
+    q.set('prepTrigger', String(Date.now()));
+    navigate(`/dashboard/ai-tutor?${q.toString()}`);
+  };
+
   if (loading) {
     return (
       <div className="d-flex align-items-center justify-content-center py-5">
@@ -169,7 +199,7 @@ export const ExamsPage: React.FC = () => {
             Academic Exams
           </h1>
           <p className="auth-subheading mb-0" style={{ textAlign: 'left' }}>
-            Add and manage your university exams (name and code).
+            Add exams with a syllabus PDF, then use <strong>Prepare</strong> to open the AI Tutor with a study plan from your syllabus.
           </p>
         </div>
         <button type="button" className="btn btn-primary px-4 py-2" onClick={openAddModal}>
@@ -202,28 +232,54 @@ export const ExamsPage: React.FC = () => {
                     <th>Exam name</th>
                     <th>Exam code</th>
                     <th>Date</th>
-                    <th className="text-end">Action</th>
+                    <th>Syllabus</th>
+                    <th className="text-end">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {exams.map((exam) => (
-                    <tr key={exam._id}>
+                  {exams.map((exam) => {
+                    const eid = examIdString(exam._id as string | { toString?: () => string });
+                    return (
+                    <tr key={eid}>
                       <td>{exam.universityName}</td>
                       <td>{exam.examName}</td>
                       <td><code className="bg-light px-2 py-1 rounded">{exam.examCode}</code></td>
                       <td>{formatExamDate(exam.examDate)}</td>
+                      <td>
+                        {exam.hasSyllabus ? (
+                          <span className="badge text-bg-success">PDF</span>
+                        ) : (
+                          <span className="text-secondary">—</span>
+                        )}
+                      </td>
                       <td className="text-end">
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => handleDelete(exam._id)}
-                          disabled={deletingId === exam._id}
-                        >
-                          {deletingId === exam._id ? 'Deleting...' : 'Delete'}
-                        </button>
+                        <div className="d-inline-flex flex-wrap gap-1 justify-content-end">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-primary"
+                            onClick={() => handlePrepare(exam)}
+                            disabled={!exam.hasSyllabus}
+                            title={
+                              exam.hasSyllabus
+                                ? 'Open AI Tutor with a study plan from your syllabus'
+                                : 'Syllabus PDF required'
+                            }
+                          >
+                            Prepare
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => handleDelete(eid)}
+                            disabled={deletingId === eid}
+                          >
+                            {deletingId === eid ? 'Deleting...' : 'Delete'}
+                          </button>
+                        </div>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -310,6 +366,20 @@ export const ExamsPage: React.FC = () => {
                     value={examDate}
                     onChange={(e) => setExamDate(e.target.value)}
                   />
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="modalSyllabusPdf" className="form-label">
+                    Syllabus (PDF) <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    id="modalSyllabusPdf"
+                    ref={syllabusInputRef}
+                    type="file"
+                    className="form-control"
+                    accept=".pdf,application/pdf"
+                    onChange={(e) => setSyllabusFile(e.target.files?.[0] ?? null)}
+                  />
+                  <div className="form-text">Required. Used by AI Tutor when you click Prepare.</div>
                 </div>
                 {formError && (
                   <div className="alert alert-danger py-2 mb-0">{formError}</div>
