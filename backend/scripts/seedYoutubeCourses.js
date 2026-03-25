@@ -13,41 +13,41 @@ if (!MONGO_URI) {
     process.exit(1);
 }
 
-// 5 highly-reliable, embed-friendly YouTube Video IDs from open educators (e.g. FreeCodeCamp, TraversyMedia)
+// 15 high-quality, real YouTube Video IDs from reputable educators
 const SAFE_VIDEO_IDS = [
-    "bMknfKXIFA8", // React
-    "W6NZfCO5SIk", // JavaScript
-    "pkx2y8_I0sU", // Python
-    "zJSY8tbf_ys", // Frontend
-    "Oe421EPjeBE"  // Node.js
+    "ok-plXXHlWw", // HTML & CSS - SuperSimpleDev
+    "W6NZfCO5SIk", // JavaScript - Programming with Mosh
+    "bMknfKXIFA8", // React - Dave Gray
+    "wm5gMKuwSYk", // Next.js - JavaScript Mastery
+    "Oe421EPjeBE", // Node.js - freeCodeCamp
+    "_uQrJ0TkZlc", // Python - Programming with Mosh
+    "7S_tz1z_5bA", // SQL - Programming with Mosh
+    "ua-CiDNNj30", // Data Science - freeCodeCamp
+    "GwIo3gDZCVQ", // Machine Learning - Edureka
+    "FTFaQWPPq9Q", // Figma - AJ&Smart
+    "5uD99mG1fks", // UX Design - Google
+    "nU-IIXBWlS4", // Digital Marketing - Simplilearn
+    "fW8amMCVAJQ", // Business - CEO Entrepreneur
+    "LwCRRUa8yTU", // College Algebra - freeCodeCamp
+    "QnQe0xW_JY4"  // Biology - Crash Course
 ];
 
 const COURSES = [
-    { title: "HTML & CSS Full Course - Beginner to Pro", description: "Learn HTML5 and CSS3 from scratch.", category: "Web Development" },
-    { title: "JavaScript Tutorial for Beginners", description: "Learn JavaScript in 1 hour.", category: "Web Development" },
-    { title: "React JS Crash Course", description: "Get started with React in this crash course.", category: "Web Development" },
-    { title: "Next.js 14 Full Course 2024", description: "Build and Deploy a Full Stack App.", category: "Web Development" },
-    { title: "Node.js and Express.js - Full Course", description: "Learn Node.js and Express.", category: "Web Development" },
-    { title: "Python for Beginners - Full Course", description: "Python syntax, data types, operators.", category: "Programming" },
-    { title: "Java Tutorial for Beginners", description: "Learn Java programming from scratch.", category: "Programming" },
-    { title: "C++ Programming Course for Beginners", description: "Learn C++ from basics to advanced.", category: "Programming" },
-    { title: "C# Tutorial - Full Course for Beginners", description: "Learn C# programming.", category: "Programming" },
-    { title: "Data Structures and Algorithms", description: "Comprehensive DSA course using Python.", category: "Programming" },
-    { title: "UX/UI Design Course", description: "Master UX/UI Design principles.", category: "Design" },
-    { title: "Figma UI Design Tutorial", description: "Learn Figma in an hour.", category: "Design" },
-    { title: "Graphic Design Basics", description: "Learn typography, color theory.", category: "Design" },
-    { title: "Digital Marketing Basics", description: "SEO, social media marketing.", category: "Marketing" },
-    { title: "SEO Tutorial for Beginners", description: "Complete SEO basics.", category: "Marketing" },
-    { title: "Business Analytics", description: "Understand data storytelling.", category: "Business" },
-    { title: "Financial Accounting Basics", description: "Learn accounting equations.", category: "Business" },
-    { title: "Machine Learning Full Course", description: "Learn Supervised Learning.", category: "Data" },
-    { title: "Data Science Full Course", description: "Python, Pandas, NumPy.", category: "Data" },
-    { title: "SQL Tutorial for Beginners", description: "Complete SQL database course.", category: "Math" },
-    { title: "Statistics for Data Science", description: "Descriptive and inferential statistics.", category: "Math" },
-    { title: "Linear Algebra full course", description: "Vectors, matrices, linear transformations.", category: "Math" },
-    { title: "Cloud Computing Basics", description: "Introduction to AWS, Azure, GCP.", category: "Science" },
-    { title: "Docker Tutorial for Beginners", description: "Learn containers, images.", category: "Web Development" },
-    { title: "Kubernetes Crash Course", description: "Understanding K8s architecture.", category: "Web Development" }
+    { title: "HTML & CSS Full Course - Beginner to Pro", description: "Learn HTML5 and CSS3 from scratch with hands-on projects.", category: "Web Development" },
+    { title: "JavaScript Tutorial for Beginners", description: "Master the fundamentals of JavaScript in this comprehensive guide.", category: "Web Development" },
+    { title: "React JS Full Course 2024", description: "Build modern web applications with React from zero to hero.", category: "Web Development" },
+    { title: "Next.js 14 Full Course 2024", description: "Learn App Router, Server Actions, and more in Next.js 14.", category: "Web Development" },
+    { title: "Node.js and Express.js - Full Course", description: "Deep dive into backend development with Node.js and Express.", category: "Web Development" },
+    { title: "Python for Beginners - Full Course", description: "Start your programming journey with the most popular language.", category: "Programming" },
+    { title: "SQL Tutorial for Beginners", description: "Learn how to manage and query databases like a pro.", category: "Programming" },
+    { title: "Learn Data Science Tutorial", description: "Introduction to data science foundations and tools.", category: "Data Science" },
+    { title: "Machine Learning Full Course", description: "Comprehensive guide to supervised and unsupervised learning.", category: "Data Science" },
+    { title: "Figma UI Design Tutorial", description: "Learn the industry-standard tool for UI/UX design.", category: "Design" },
+    { title: "Google UX Design Professional Certificate", description: "Foundational principles of user experience design from Google experts.", category: "Design" },
+    { title: "Digital Marketing Full Course", description: "Master SEO, SEM, and social media marketing strategies.", category: "Marketing" },
+    { title: "How to Start a Business from Scratch", description: "Real-world advice for entrepreneurs starting their first business.", category: "Business" },
+    { title: "College Algebra - Full Course", description: "Complete college-level algebra course for students.", category: "Mathematics" },
+    { title: "Introduction to Biology", description: "Learn the fundamentals of life and biological systems.", category: "Science" }
 ];
 
 async function run() {
@@ -63,17 +63,17 @@ async function run() {
         console.log("Found instructor/admin:", instructor._id);
         console.log("Cleaning up previously seeded courses/assignments...");
         
-        await Course.deleteMany({ title: { $in: COURSES.map(c => c.title) } });
-        // We will also delete related assignments generated by this script
-        await Assignment.deleteMany({ title: { $regex: /^Assignment:/ } });
+        // Clear all existing courses and assignments to ensure a fresh start with real data
+        await Course.deleteMany({});
+        await Assignment.deleteMany({});
 
-        console.log("Seeding 25 courses with safe YouTube videos and Assignments...");
+        console.log(`Seeding ${COURSES.length} real YouTube-integrated courses and Assignments...`);
 
         let createdCount = 0;
 
         for (let i = 0; i < COURSES.length; i++) {
             const c = COURSES[i];
-            const safeYtId = SAFE_VIDEO_IDS[i % SAFE_VIDEO_IDS.length];
+            const safeYtId = SAFE_VIDEO_IDS[i]; // 1:1 mapping
 
             const courseData = {
                 title: c.title,
@@ -115,7 +115,7 @@ async function run() {
             createdCount++;
         }
 
-        console.log(`Successfully created ${createdCount} awesome YouTube-integrated courses and their corresponding Assignments!`);
+        console.log(`Successfully created ${createdCount} real original courses and their corresponding Assignments!`);
 
     } catch (err) {
         console.error("Error seeding courses:", err);

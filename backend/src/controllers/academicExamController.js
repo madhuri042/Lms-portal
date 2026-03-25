@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { PDFParse } = require('pdf-parse');
+const pdf = require('pdf-parse');
 const AcademicExam = require('../models/AcademicExam');
 const { streamOpenRouterToSse } = require('../utils/openRouterStream');
 
@@ -118,18 +118,16 @@ exports.streamExamPrep = async (req, res) => {
 
         const buffer = fs.readFileSync(filePath);
         let text = '';
-        const parser = new PDFParse({ data: buffer });
         try {
-            const result = await parser.getText();
-            text = (result.text || '').trim();
-        } catch {
+            const data = await pdf(buffer);
+            text = (data.text || '').trim();
+        } catch (err) {
+            console.error('PDF parsing error:', err);
             return res.status(400).json({
                 success: false,
                 message:
                     'Could not read the PDF. Use a text-based (searchable) PDF; scanned image-only PDFs may not work.',
             });
-        } finally {
-            await parser.destroy().catch(() => {});
         }
 
         if (!text || text.length < 40) {
