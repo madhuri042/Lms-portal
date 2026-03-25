@@ -567,23 +567,78 @@
 
 .detail-enrolled-item {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: #f8fafc;
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.detail-enrolled-item:hover {
+    background: white;
+    border-color: #4f46e5;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+}
+
+.detail-enrolled-main {
+    display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding: 0.75rem 1rem;
-    background: #f8fafc;
-    border-radius: 0.75rem;
-    border: 1px solid #e2e8f0;
 }
 
 .detail-enrolled-name {
-    font-weight: 600;
-    font-size: 1rem;
+    font-weight: 700;
+    font-size: 1.0625rem;
     color: #0f172a;
 }
 
 .detail-enrolled-email {
     font-size: 0.875rem;
     color: #64748b;
+}
+
+.detail-enrolled-performance {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    width: 140px;
+}
+
+.performance-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.performance-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.performance-value {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: #4f46e5;
+}
+
+.performance-bar-bg {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.performance-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, #6366f1, #4f46e5);
+    border-radius: 100px;
 }
 
 /* Course Videos (YouTube iframe) */

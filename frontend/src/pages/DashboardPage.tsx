@@ -93,6 +93,9 @@ type InstructorStudentEntry = {
   enrolledCourses: string[];
   progress: number;
   avgGrade: number | null;
+  avgExamScore: number | null;
+  lastLogin: string | null;
+  loginCount: number;
   status: string;
 };
 
@@ -589,7 +592,15 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
                           </span>
                         )}
                       </div>
-                      <span className="dashboard-student-progress">{s.progress}%</span>
+                      <div className="dashboard-student-stats" style={{ textAlign: 'right' }}>
+                        <div className="dashboard-student-progress" style={{ fontWeight: 'bold', color: 'var(--primary)' }}>{s.progress}%</div>
+                        {s.avgExamScore != null && (
+                          <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>Exam: {s.avgExamScore}%</div>
+                        )}
+                        {s.lastLogin && (
+                          <div style={{ fontSize: '0.65rem', opacity: 0.5 }}> {new Date(s.lastLogin).toLocaleDateString()}</div>
+                        )}
+                      </div>
                     </Link>
                   </li>
                 ))}

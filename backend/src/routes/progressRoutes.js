@@ -15,6 +15,6 @@ router
 
 router
     .route('/video')
-    .post(protect, authorizeRoles('student'), markVideoWatched);
+    .post(protect, authorizeRoles('student', 'instructor'), markVideoWatched);
 
 module.exports = router;

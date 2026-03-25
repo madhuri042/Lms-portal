@@ -87,8 +87,11 @@ app.get('/api/debug', (req, res) => {
 });
 
 app.use((req, res, next) => {
-    console.log(`Unmatched Request: ${req.method} ${req.url}`);
-    next();
+    console.log(`[BACKEND 404] ${req.method} ${req.url}`);
+    res.status(404).json({
+        success: false,
+        message: `Route ${req.method} ${req.url} not found on this server.`
+    });
 });
 
 const errorHandler = require('./src/middlewares/errorMiddleware');

@@ -22,6 +22,7 @@ interface EnrolledStudent {
     firstName?: string;
     lastName?: string;
     email?: string;
+    progress?: number;
 }
 
 interface CourseDetail {
@@ -333,10 +334,21 @@ export const CourseDetailPage: React.FC = () => {
                                 <ul className="detail-enrolled-list">
                                     {enrolledList.map((s) => (
                                         <li key={s._id} className="detail-enrolled-item">
-                                            <span className="detail-enrolled-name">
-                                                {[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}
-                                            </span>
-                                            {s.email && <span className="detail-enrolled-email">{s.email}</span>}
+                                            <div className="detail-enrolled-main">
+                                                <span className="detail-enrolled-name">
+                                                    {[s.firstName, s.lastName].filter(Boolean).join(' ') || '—'}
+                                                </span>
+                                                {s.email && <span className="detail-enrolled-email">{s.email}</span>}
+                                            </div>
+                                            <div className="detail-enrolled-performance">
+                                                <div className="performance-chip">
+                                                    <span className="performance-label">Progress</span>
+                                                    <span className="performance-value">{s.progress || 0}%</span>
+                                                </div>
+                                                <div className="performance-bar-bg">
+                                                    <div className="performance-bar-fill" style={{ width: `${s.progress || 0}%` }} />
+                                                </div>
+                                            </div>
                                         </li>
                                     ))}
                                 </ul>

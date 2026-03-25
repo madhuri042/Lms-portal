@@ -1,5 +1,8 @@
 const Course = require('../models/Course');
 const User = require('../models/User');
+const Progress = require('../models/Progress');
+const AssignmentSubmission = require('../models/AssignmentSubmission');
+const ExamSubmission = require('../models/ExamSubmission');
 
 // @desc    Get all courses
 // @route   GET /api/courses
@@ -13,9 +16,6 @@ exports.getCourses = async (req, res) => {
     }
 };
 
-// @desc    Get a single course
-// @route   GET /api/courses/:id
-// @access  Public
 exports.getCourse = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id)
@@ -26,7 +26,30 @@ exports.getCourse = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Course not found' });
         }
 
-        res.status(200).json({ success: true, data: course });
+        // If instructor/admin, add progress/performance for each student
+        let courseData = course.toObject();
+        if (req.user && (req.user.role === 'admin' || req.user.role === 'instructor')) {
+            const studentIds = course.enrolledStudents.map(s => s._id || s);
+            
+            // Fetch progress for all students in this course
+            const progressList = await Progress.find({
+                course: course._id,
+                student: { $in: studentIds }
+            }).lean();
+
+            // Fetch submissions to calculate grades if needed, but for simplicity let's stick to % progress
+            const progressMap = {};
+            progressList.forEach(p => {
+                progressMap[p.student.toString()] = p.completionPercentage || 0;
+            });
+
+            courseData.enrolledStudents = courseData.enrolledStudents.map(s => ({
+                ...s,
+                progress: progressMap[s._id.toString()] || 0
+            }));
+        }
+
+        res.status(200).json({ success: true, data: courseData });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

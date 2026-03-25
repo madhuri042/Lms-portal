@@ -102,6 +102,11 @@ exports.login = async (req, res) => {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
         }
 
+        // Update login stats
+        user.lastLogin = new Date();
+        user.loginCount = (user.loginCount || 0) + 1;
+        await user.save();
+
         res.status(200).json({
             success: true,
             token: generateToken(user._id),
@@ -223,3 +228,50 @@ exports.updatePassword = async (req, res) => {
     }
 };
 
+
+// @desc    Forgot password (simplified for demo)
+// @route   POST /api/auth/forgot-password
+// @access  Public
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'There is no user with that email' });
+        }
+
+        // In a real app, we would send a token via email.
+        // For this demo, we'll just indicate success and redirect to reset.
+        res.status(200).json({
+            success: true,
+            message: 'Email verified. You can now reset your password.',
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// @desc    Reset password (simplified for demo)
+// @route   POST /api/auth/reset-password
+// @access  Public
+exports.resetPassword = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        user.password = password;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Password reset successfully. You can now login.',
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

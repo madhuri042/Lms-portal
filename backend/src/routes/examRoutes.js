@@ -24,6 +24,6 @@ router
 
 router
     .route('/:id/submit')
-    .post(protect, authorizeRoles('student'), submitExam);
+    .post(protect, authorizeRoles('student', 'instructor'), submitExam);
 
 module.exports = router;

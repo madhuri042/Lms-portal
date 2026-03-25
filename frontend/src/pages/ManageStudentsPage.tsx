@@ -13,6 +13,9 @@ type StudentDirectoryEntry = {
   enrolledCourses: string[];
   progress: number;
   avgGrade: number | null;
+  avgExamScore: number | null;
+  lastLogin: string | null;
+  loginCount: number;
   status: string;
 };
 
@@ -272,6 +275,8 @@ export const ManageStudentsPage: React.FC = () => {
                 <th>ENROLLED COURSE</th>
                 <th>PROGRESS</th>
                 <th>AVG. GRADE</th>
+                <th>EXAM SCORE</th>
+                <th>LAST LOGIN</th>
                 <th>STATUS</th>
                 <th>ACTIONS</th>
               </tr>
@@ -333,6 +338,21 @@ export const ManageStudentsPage: React.FC = () => {
                       <span className="manage-students-grade">
                         {s.avgGrade != null ? `${s.avgGrade}%` : '—'}
                       </span>
+                    </td>
+                    <td>
+                      <span className="manage-students-grade">
+                        {s.avgExamScore != null ? `${s.avgExamScore}%` : '—'}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="manage-students-login-info">
+                        <div className="manage-students-last-login">
+                          {s.lastLogin ? new Date(s.lastLogin).toLocaleDateString() : 'Never'}
+                        </div>
+                        <div className="manage-students-login-count" style={{ fontSize: '0.75rem', opacity: 0.6 }}>
+                          {s.loginCount} logins
+                        </div>
+                      </div>
                     </td>
                     <td>
                       <span className="manage-students-status">{s.status || 'ACTIVE'}</span>

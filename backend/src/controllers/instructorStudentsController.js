@@ -3,6 +3,8 @@ const User = require('../models/User');
 const Progress = require('../models/Progress');
 const Assignment = require('../models/Assignment');
 const AssignmentSubmission = require('../models/AssignmentSubmission');
+const ExamSubmission = require('../models/ExamSubmission');
+const OnlineExam = require('../models/OnlineExam');
 
 /**
  * GET /api/instructor/students
@@ -24,12 +26,22 @@ exports.getStudentDirectory = async (req, res) => {
         const allStudentIds = new Set();
         courses.forEach((c) => (c.enrolledStudents || []).forEach((id) => allStudentIds.add(id.toString())));
 
+        // Also find students created by this instructor OR students who don't have an instructor yet
+        const createdByMeOrOrphaned = await User.find({ 
+            role: 'student',
+            $or: [
+                { createdBy: instructorId },
+                { createdBy: { $exists: false } }
+            ]
+        }).distinct('_id');
+        createdByMeOrOrphaned.forEach(id => allStudentIds.add(id.toString()));
+
         if (allStudentIds.size === 0) {
             return res.status(200).json({ success: true, data: [], courses: courses.map((c) => ({ _id: c._id, title: c.title })) });
         }
 
         const students = await User.find({ _id: { $in: Array.from(allStudentIds) }, role: 'student' })
-            .select('_id firstName lastName email phone')
+            .select('_id firstName lastName email phone lastLogin loginCount')
             .lean();
 
         const progressList = await Progress.find({ student: { $in: Array.from(allStudentIds) }, course: { $in: courseIds } })
@@ -51,6 +63,22 @@ exports.getStudentDirectory = async (req, res) => {
             if (!assignmentsByStudent[sid]) assignmentsByStudent[sid] = [];
             const total = (s.assignment && s.assignment.totalMarks) || 100;
             assignmentsByStudent[sid].push(total > 0 ? (s.marksObtained || 0) / total * 100 : 0);
+        });
+
+        const examIds = await OnlineExam.find({ course: { $in: courseIds } }).distinct('_id');
+        const examSubmissions = await ExamSubmission.find({
+            student: { $in: Array.from(allStudentIds) },
+            exam: { $in: examIds },
+        }).lean();
+
+        const examsByStudent = {};
+        examSubmissions.forEach((es) => {
+            const sid = es.student.toString();
+            if (!examsByStudent[sid]) examsByStudent[sid] = [];
+            // Assuming total marks for exam is sum of question marks or we can just use totalScore as % if we don't have total
+            // For now, let's treat totalScore as the absolute score. 
+            // In a real system we'd need exam.totalMarks.
+            examsByStudent[sid].push(es.totalScore || 0);
         });
 
         const progressByStudentCourse = {};
@@ -77,6 +105,9 @@ exports.getStudentDirectory = async (req, res) => {
             const avgProgress = progressPcts.length ? Math.round(progressPcts.reduce((a, b) => a + b, 0) / progressPcts.length) : 0;
             const grades = assignmentsByStudent[sid] || [];
             const avgGrade = grades.length ? Math.round(grades.reduce((a, b) => a + b, 0) / grades.length) : null;
+            
+            const examGrades = examsByStudent[sid] || [];
+            const avgExamScore = examGrades.length ? Math.round(examGrades.reduce((a, b) => a + b, 0) / examGrades.length) : null;
 
             return {
                 _id: s._id,
@@ -87,6 +118,9 @@ exports.getStudentDirectory = async (req, res) => {
                 enrolledCourses: enrolledTitles,
                 progress: Math.min(100, Math.max(0, avgProgress)),
                 avgGrade: avgGrade != null ? avgGrade : null,
+                avgExamScore: avgExamScore != null ? avgExamScore : null,
+                lastLogin: s.lastLogin || null,
+                loginCount: s.loginCount || 0,
                 status: 'ACTIVE',
             };
         });
@@ -137,6 +171,7 @@ exports.createStudent = async (req, res) => {
             phone: phoneStr,
             password: 'Student@123',
             role: 'student',
+            createdBy: req.user.id,
         });
 
         if (courseId) {

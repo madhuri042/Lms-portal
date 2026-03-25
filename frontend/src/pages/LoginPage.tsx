@@ -142,6 +142,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 autoComplete="current-password"
               />
               {errors.password && <p className="auth-error-text">{errors.password}</p>}
+              <div style={{ textAlign: 'right', marginTop: '0.5rem' }}>
+                <Link to="/forgot-password" style={{ fontSize: '0.875rem', color: 'var(--primary)', textDecoration: 'none' }}>
+                  Forgot password?
+                </Link>
+              </div>
             </div>
 
             {errors.submit && (

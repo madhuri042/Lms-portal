@@ -60,11 +60,11 @@ router.route('/:id').get(protect, getAssignmentById);
 
 router
     .route('/:id/submit-mcq')
-    .post(protect, authorizeRoles('student'), submitMcqAssignment);
+    .post(protect, authorizeRoles('student', 'instructor'), submitMcqAssignment);
 
 router
     .route('/:id/submit')
-    .post(protect, authorizeRoles('student'), upload.single('file'), submitAssignment);
+    .post(protect, authorizeRoles('student', 'instructor'), upload.single('file'), submitAssignment);
 
 router
     .route('/:id/submissions')

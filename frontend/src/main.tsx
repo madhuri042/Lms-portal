@@ -29,6 +29,9 @@ import { AssignmentDetailPage } from './pages/AssignmentDetailPage';
 import { ExamsPage } from './pages/ExamsPage';
 import { PerformancePage } from './pages/PerformancePage';
 import { AITutorPage } from './pages/AITutorPage';
+import { ProfilePage } from './pages/ProfilePage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { SystemReportsPage } from './pages/SystemReportsPage';
 import { ManageStudentsPage } from './pages/ManageStudentsPage';
 import { SubmissionsPage } from './pages/SubmissionsPage';
@@ -51,6 +54,7 @@ import { AdminActivityLogsPage } from './admin/AdminActivityLogsPage';
 import { AdminNotificationsPage } from './admin/AdminNotificationsPage';
 import { AdminSettingsPage } from './admin/AdminSettingsPage';
 import { ProfileSettingsPage } from './pages/ProfileSettingsPage';
+import { InstructorCreateCoursePage } from './pages/InstructorCreateCoursePage';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -108,6 +112,8 @@ const App: React.FC = () => {
             currentUser ? <Navigate to="/dashboard" replace /> : <SignupPage onSignupSuccess={handleAuthSuccess} />
           }
         />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route
           path="/admin/login"
           element={
@@ -169,6 +175,7 @@ const App: React.FC = () => {
             }
           />
           <Route path="courses" element={<MyCoursesPage />} />
+          <Route path="courses/create" element={<InstructorCreateCoursePage />} />
           <Route path="recommended" element={<RecommendedPage />} />
           <Route path="assignments" element={<AssignmentsPage />} />
           <Route path="assignments/:id" element={<AssignmentDetailPage />} />

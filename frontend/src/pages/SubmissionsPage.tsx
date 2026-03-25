@@ -6,10 +6,11 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 type Submission = {
   _id: string;
-  assignment: { _id: string; title: string; totalMarks: number };
+  assignment: { _id: string; title: string; totalMarks: number; type?: string; questions?: any[] };
   student: { _id: string; firstName: string; lastName: string; email: string };
   status: string;
   fileUrl?: string;
+  answers?: { questionId: string; answerGiven: string }[];
   marksObtained?: number;
   feedback?: string;
   createdAt: string;
@@ -23,6 +24,7 @@ export const SubmissionsPage: React.FC = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [marks, setMarks] = useState<string>('');
   const [feedback, setFeedback] = useState<string>('');
+  const [selectedSub, setSelectedSub] = useState<Submission | null>(null);
   const { showToast } = useToast();
 
   const fetchPending = async () => {
@@ -90,6 +92,7 @@ export const SubmissionsPage: React.FC = () => {
   };
 
   const openEvaluate = (sub: Submission) => {
+    setSelectedSub(sub);
     setEvaluatingId(sub._id);
     setMarks(sub.marksObtained != null ? String(sub.marksObtained) : '');
     setFeedback(sub.feedback || '');
@@ -203,6 +206,29 @@ export const SubmissionsPage: React.FC = () => {
                     placeholder="Comments for the student..."
                   />
                 </div>
+
+                {selectedSub && (selectedSub.fileUrl || (selectedSub.answers && selectedSub.answers.length > 0)) && (
+                  <div className="mt-4 p-3 bg-light rounded border">
+                    <h6 className="fw-bold mb-2">Submitted Content</h6>
+                    {selectedSub.fileUrl && (
+                      <div className="mb-2">
+                        <a href={selectedSub.fileUrl} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary">
+                          Download/View Submitted File
+                        </a>
+                      </div>
+                    )}
+                    {selectedSub.answers && selectedSub.answers.length > 0 && (
+                      <div className="small">
+                        <p className="text-muted mb-1">MCQ Answers:</p>
+                        <ul className="mb-0 ps-3">
+                          {selectedSub.answers.map((ans, idx) => (
+                            <li key={idx}>Question {idx+1}: <strong>{ans.answerGiven}</strong></li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-outline-secondary" onClick={() => setEvaluatingId(null)}>

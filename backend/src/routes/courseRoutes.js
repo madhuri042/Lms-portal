@@ -20,7 +20,7 @@ const progressRouter = require('./progressRoutes');
 const router = express.Router();
 
 // 1. Static/Specific Routes (Must be HIGHER than parameterized routes)
-router.route('/enrolled').get(protect, authorizeRoles('student', 'admin'), getEnrolledCourses);
+router.route('/enrolled').get(protect, authorizeRoles('student', 'instructor', 'admin'), getEnrolledCourses);
 router.route('/teaching').get(protect, authorizeRoles('instructor', 'admin'), getTeachingCourses);
 
 // 2. Resource Redirection
@@ -42,6 +42,6 @@ router
     .put(protect, authorizeRoles('admin', 'instructor'), updateCourse)
     .delete(protect, authorizeRoles('admin', 'instructor'), deleteCourse);
 
-router.route('/:id/enroll').post(protect, authorizeRoles('student', 'admin'), enrollCourse);
+router.route('/:id/enroll').post(protect, authorizeRoles('student', 'instructor', 'admin'), enrollCourse);
 
 module.exports = router;

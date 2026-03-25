@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema(
             enum: ['admin', 'instructor', 'student'],
             default: 'student',
         },
+        createdBy: {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User',
+        },
         phone: {
             type: String,
             required: [true, 'Please add a phone number'],
@@ -58,6 +62,13 @@ const userSchema = new mongoose.Schema(
         },
         upgradeExpiry: {
             type: Date,
+        },
+        lastLogin: {
+            type: Date,
+        },
+        loginCount: {
+            type: Number,
+            default: 0,
         },
     },
     { timestamps: true }

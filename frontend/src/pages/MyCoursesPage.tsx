@@ -136,9 +136,18 @@ export const MyCoursesPage: React.FC = () => {
   if (isInstructor) {
     return (
       <div className="catalog-page">
-        <header className="catalog-page__header">
-          <h1 className="catalog-page__title">Course Catalog</h1>
-          <p className="catalog-page__subtitle">Courses you&apos;re teaching. View and manage enrollments.</p>
+        <header className="catalog-page__header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div>
+            <h1 className="catalog-page__title">Course Catalog</h1>
+            <p className="catalog-page__subtitle">Courses you&apos;re teaching. View and manage enrollments.</p>
+          </div>
+          <Link to="/dashboard/courses/create" className="manage-students-add-btn" style={{ textDecoration: 'none' }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Create Course
+          </Link>
         </header>
 
         {error && (
