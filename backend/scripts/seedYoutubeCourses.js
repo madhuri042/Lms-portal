@@ -101,16 +101,36 @@ async function run() {
             
             const savedCourse = await Course.create(courseData);
             
+            // 1. Programming Assignment
             const assignmentData = {
-                title: `Assignment: ${c.title}`,
-                description: `Please complete the follow-up exercises for the video session: "${c.title}". Ensure you have watched the entire embedded video lecture before proceeding.`,
+                title: `Programming: ${c.title}`,
+                description: `Complete the practical exercises for "${c.title}". Implement the core concepts discussed in the video.`,
                 type: 'programming',
                 course: savedCourse._id,
                 instructor: instructor._id,
-                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-                totalMarks: 100
+                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                totalMarks: 50
             };
             await Assignment.create(assignmentData);
+
+            // 2. MCQ Exercise
+            const mcqData = {
+                title: `Self-Assessment: ${c.title}`,
+                description: `Test your knowledge on "${c.title}" with these fundamental questions.`,
+                type: 'mcq',
+                course: savedCourse._id,
+                instructor: instructor._id,
+                dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+                totalMarks: 50,
+                questions: [
+                    { questionText: `What is the primary focus of ${c.category}?`, options: ['Theory', 'Practice', 'Both', 'None'], correctAnswer: 'Both', marks: 10 },
+                    { questionText: `Which tool is most commonly used in ${c.title}?`, options: ['Tool A', 'Tool B', 'Tool C', 'Depends'], correctAnswer: 'Depends', marks: 10 },
+                    { questionText: `Is ${c.title} suitable for beginners?`, options: ['Yes', 'No', 'Maybe', 'Advanced Only'], correctAnswer: 'Yes', marks: 10 },
+                    { questionText: `How many hours of practice are recommended for this module?`, options: ['1 hour', '5 hours', '10 hours', 'Unlimited'], correctAnswer: '10 hours', marks: 10 },
+                    { questionText: `Which of these is a key outcome of this course?`, options: ['Knowledge', 'Skills', 'Certification', 'All of the above'], correctAnswer: 'All of the above', marks: 10 }
+                ]
+            };
+            await Assignment.create(mcqData);
 
             createdCount++;
         }

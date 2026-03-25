@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { Loader } from '../components/Loader';
 import { Link } from 'react-router-dom';
 import { getCourseCoverUrl } from '../utils/courseCover';
+import { getCache, setCache } from '../utils/cache';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -49,6 +50,16 @@ export const MyCoursesPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!role) return;
+    const isInstr = role === 'instructor' || role === 'admin';
+    const cached = getCache(isInstr ? 'teaching_courses' : 'enrolled_courses');
+    if (cached) {
+      setCourses(cached);
+      setLoading(false);
+    }
+  }, [role]);
+
+  useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
       setError('Please login to view your courses.');
@@ -75,6 +86,7 @@ export const MyCoursesPage: React.FC = () => {
           const data = await res.json();
           if (!res.ok) throw new Error(data.message || 'Failed to fetch courses');
           setCourses(data.data || []);
+          setCache(isInstructor ? 'teaching_courses' : 'enrolled_courses', data.data || []);
         }
       } catch (err: any) {
         setError(err.message);

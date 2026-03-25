@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Loader } from '../components/Loader';
 import { getCourseCoverUrl } from '../utils/courseCover';
+import { getCache, setCache } from '../utils/cache';
 
 type User = {
   id: string;
@@ -186,6 +187,35 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
   const examsScrollRef = useRef<HTMLDivElement>(null);
   const teachingScrollRef = useRef<HTMLDivElement>(null);
 
+  // Initialize from cache for 'instant' feel
+  useEffect(() => {
+    const cachedData = getCache(`dashboard_${user.role}`);
+    if (cachedData) {
+      setData(cachedData);
+      setLoading(false);
+    }
+    
+    if (user.role === 'student') {
+      const cachedPending = getCache('pending_assignments');
+      if (cachedPending) setPendingAssignments(cachedPending);
+      
+      const cachedExams = getCache('dashboard_exams');
+      if (cachedExams) setExams(cachedExams);
+      
+      const cachedRec = getCache('recommended_courses');
+      if (cachedRec) setRecommendedCourses(cachedRec);
+      
+      const cachedEnrolled = getCache('enrolled_courses');
+      if (cachedEnrolled) setEnrolledCourses(cachedEnrolled);
+    } else if (user.role === 'instructor') {
+      const cachedTeaching = getCache('teaching_courses');
+      if (cachedTeaching) setTeachingCourses(cachedTeaching);
+      
+      const cachedStudents = getCache('instructor_students');
+      if (cachedStudents) setInstructorStudents(cachedStudents);
+    }
+  }, [user.role]);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -235,6 +265,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         }
 
         setData(body.data as any);
+        setCache(`dashboard_${user.role}`, body.data);
       } catch (err: any) {
         setError(err.message || 'Something went wrong while loading dashboard.');
       } finally {
@@ -266,6 +297,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
           .slice(0, 10)
           .map((a) => ({ _id: a._id, title: a.title, dueDate: a.dueDate, course: a.course }));
         setPendingAssignments(pending);
+        setCache('pending_assignments', pending);
       } catch {
         setPendingAssignments([]);
       }
@@ -289,7 +321,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
           setExams([]);
           return;
         }
-        setExams((body.data as DashboardExam[]).slice(0, 10));
+        const examsRef = (body.data as DashboardExam[]).slice(0, 10);
+        setExams(examsRef);
+        setCache('dashboard_exams', examsRef);
       } catch {
         setExams([]);
       }
@@ -310,7 +344,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         });
         const body = await res.json().catch(() => ({}));
         if (res.ok && Array.isArray(body?.data)) {
-          setRecommendedCourses(body.data.slice(0, 20));
+          const rec = body.data.slice(0, 20);
+          setRecommendedCourses(rec);
+          setCache('recommended_courses', rec);
         }
       } catch {
         setRecommendedCourses([]);
@@ -325,6 +361,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         const body = await res.json().catch(() => ({}));
         if (res.ok && Array.isArray(body?.data)) {
           setEnrolledCourses(body.data);
+          setCache('enrolled_courses', body.data);
         }
       } catch {
         setEnrolledCourses([]);
@@ -347,6 +384,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         const body = await res.json().catch(() => ({}));
         if (res.ok && Array.isArray(body?.data)) {
           setTeachingCourses(body.data);
+          setCache('teaching_courses', body.data);
         }
       } catch {
         setTeachingCourses([]);
@@ -361,7 +399,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ user, onLogout }) 
         });
         const body = await res.json().catch(() => ({}));
         if (res.ok && Array.isArray(body?.data)) {
-          setInstructorStudents(body.data.slice(0, 8));
+          const studs = body.data.slice(0, 8);
+          setInstructorStudents(studs);
+          setCache('instructor_students', studs);
         }
       } catch {
         setInstructorStudents([]);

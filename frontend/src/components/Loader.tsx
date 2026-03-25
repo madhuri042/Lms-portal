@@ -10,11 +10,11 @@ export const Loader: React.FC<LoaderProps> = ({
   fullPage = true 
 }) => {
   const loaderContent = (
-    <div className="loader-container">
+    <div className={`loader-container ${fullPage ? 'full-page' : 'inline'}`}>
       <div className="loader-dots">
         <div className="dot"></div>
         <div className="dot"></div>
-        <div className="dot"></div>
+        <div className="dot" style={{ animationDelay: '0.4s' }}></div>
       </div>
       {message && <p className="loader-text">{message}</p>}
     </div>

@@ -3,6 +3,7 @@ const fs = require('fs');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./src/config/db');
+const mongoose = require('mongoose');
 const path = require('path');
 
 // Load env from backend folder so it works when started from project root or backend/
@@ -37,9 +38,10 @@ app.use((req, res, next) => {
 // Static folder for file uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health check (works even if DB is down)
+// Health check
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'healthy', database: 'unknown' });
+    const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    res.json({ status: 'healthy', database: dbStatus });
 });
 
 // Basic route

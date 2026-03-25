@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Loader } from '../components/Loader';
 import { useToast } from '../context/ToastContext';
 import { getYouTubeEmbedUrl } from '../utils/video';
+import { getCache, setCache } from '../utils/cache';
 import './CourseDetailPage.css';
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -92,6 +93,15 @@ export const CourseDetailPage: React.FC = () => {
     }, []);
 
     useEffect(() => {
+        if (!id) return;
+        const cached = getCache(`course_${id}`);
+        if (cached) {
+            setCourse(cached);
+            setLoading(false);
+        }
+    }, [id]);
+
+    useEffect(() => {
         const fetchCourse = async () => {
             setLoading(true);
             try {
@@ -105,6 +115,7 @@ export const CourseDetailPage: React.FC = () => {
                 if (!res.ok) throw new Error(data.message || 'Failed to load course details');
 
                 setCourse(data.data);
+                setCache(`course_${id}`, data.data);
 
                 const userStr = localStorage.getItem('user');
                 if (userStr && data.data.enrolledStudents) {

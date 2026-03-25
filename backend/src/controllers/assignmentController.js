@@ -5,7 +5,7 @@ const Course = require('../models/Course');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
 
-const MIN_MCQ_QUESTIONS = 20;
+const MIN_MCQ_QUESTIONS = 5;
 
 // @desc    Create new assignment
 // @route   POST /api/courses/:courseId/assignments

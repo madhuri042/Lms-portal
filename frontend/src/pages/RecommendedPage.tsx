@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from '../components/Loader';
 import { CourseModal } from '../components/CourseModal';
+import { getCache, setCache } from '../utils/cache';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -163,6 +164,14 @@ export const RecommendedPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const cached = getCache('recommended_courses');
+    if (cached) {
+      setCourses(cached);
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
     const token = localStorage.getItem('token');
     const fetchRecommended = async () => {
       setLoading(true);
@@ -178,6 +187,7 @@ export const RecommendedPage: React.FC = () => {
           return;
         }
         setCourses(Array.isArray(data?.data) ? data.data : []);
+        setCache('recommended_courses', Array.isArray(data?.data) ? data.data : []);
       } catch {
         setError('Could not connect to the server.');
         setCourses([]);

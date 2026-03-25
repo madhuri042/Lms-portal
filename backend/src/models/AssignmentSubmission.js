@@ -36,4 +36,8 @@ const assignmentSubmissionSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+assignmentSubmissionSchema.index({ assignment: 1, student: 1 });
+assignmentSubmissionSchema.index({ status: 1 });
+assignmentSubmissionSchema.index({ student: 1, createdAt: -1 });
+
 module.exports = mongoose.model('AssignmentSubmission', assignmentSubmissionSchema);

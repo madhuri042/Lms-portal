@@ -50,7 +50,7 @@ export const CourseLearnPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState<'lectures' | 'submissions'>('lectures');
+  const [activeTab, setActiveTab] = useState<'lectures' | 'exercises'>('lectures');
   const [assignments, setAssignments] = useState<CourseAssignment[]>([]);
   const [assignmentsLoading, setAssignmentsLoading] = useState(false);
 
@@ -101,7 +101,7 @@ export const CourseLearnPage: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    if (activeTab !== 'submissions' || !id) return;
+    if (activeTab !== 'exercises' || !id) return;
     const token = localStorage.getItem('token');
     if (!token) return;
     setAssignmentsLoading(true);
@@ -149,12 +149,12 @@ export const CourseLearnPage: React.FC = () => {
           </button>
           <button
             type="button"
-            className={`course-learn-tab ${activeTab === 'submissions' ? 'active' : ''}`}
+            className={`course-learn-tab ${activeTab === 'exercises' ? 'active' : ''}`}
             role="tab"
-            aria-selected={activeTab === 'submissions'}
-            onClick={() => setActiveTab('submissions')}
+            aria-selected={activeTab === 'exercises'}
+            onClick={() => setActiveTab('exercises')}
           >
-            SUBMISSIONS
+            EXERCISES
           </button>
         </nav>
 
@@ -192,7 +192,7 @@ export const CourseLearnPage: React.FC = () => {
             </div>
           )}
 
-          {activeTab === 'submissions' && (
+          {activeTab === 'exercises' && (
             <div className="course-learn-submissions-panel">
               {assignmentsLoading ? (
                 <div className="course-learn-submissions-loading">Loading submissions…</div>

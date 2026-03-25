@@ -16,6 +16,14 @@ exports.protect = async (req, res, next) => {
             console.log(`[AUTH DEBUG] Secret Prefix: ${process.env.JWT_SECRET ? process.env.JWT_SECRET.substring(0, 4) : 'MISSING'}`);
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+            const mongoose = require('mongoose');
+            if (mongoose.connection.readyState !== 1) {
+                return res.status(503).json({
+                    success: false,
+                    message: 'Database is currently disconnected. Please check the server logs and IP whitelist.'
+                });
+            }
+
             // Get user from the token
             req.user = await User.findById(decoded.id).select('-password');
 
